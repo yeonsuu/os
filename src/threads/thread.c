@@ -27,6 +27,7 @@
 /* List of processes in THREAD_READY state, that is, processes
    that are ready to run but not actually running. */
 static struct list ready_list;
+
 /* Idle thread. */
 static struct thread *idle_thread;
 
@@ -69,17 +70,18 @@ static void *alloc_frame (struct thread *, size_t size);
 static void schedule (void);
 void schedule_tail (struct thread *prev);
 static tid_t allocate_tid (void);
-//static bool is_high(struct thread *first, struct thread *second);
-
 
 /* Initializes the threading system by transforming the code
    that's currently running into a thread.  This can't work in
    general and it is possible in this case only because loader.S
    was careful to put the bottom of the stack at a page boundary.
+   
    Also initializes the run queue and the tid lock.
+   
    After calling this function, be sure to initialize the page
    allocator before trying to create any threads with
    thread_create().
+   
    It is not safe to call thread_current() until this function
    finishes. */
 void
@@ -148,12 +150,14 @@ thread_print_stats (void)
    PRIORITY, which executes FUNCTION passing AUX as the argument,
    and adds it to the ready queue.  Returns the thread identifier
    for the new thread, or TID_ERROR if creation fails.
+   
    If thread_start() has been called, then the new thread may be
    scheduled before thread_create() returns.  It could even exit
    before thread_create() returns.  Contrariwise, the original
    thread may run for any amount of time before the new thread is
    scheduled.  Use a semaphore or some other form of
    synchronization if you need to ensure ordering.
+   
    The code provided sets the new thread's `priority' member to
    PRIORITY, but no actual priority scheduling is implemented.
    Priority scheduling is the goal of Problem 1-3. */
@@ -200,6 +204,7 @@ thread_create (const char *name, int priority,
 
 /* Puts the current thread to sleep.  It will not be scheduled
    again until awoken by thread_unblock().
+   
    This function must be called with interrupts turned off.  It
    is usually a better idea to use one of the synchronization
    primitives in synch.h. */
@@ -216,6 +221,7 @@ thread_block (void)
 /* Transitions a blocked thread T to the ready-to-run state.
    This is an error if T is not blocked.  (Use thread_yield() to
    make the running thread ready.)
+   
    This function does not preempt the running thread.  This can
    be important: if the caller had disabled interrupts itself,
    it may expect that it can atomically unblock a thread and
@@ -223,19 +229,19 @@ thread_block (void)
 void
 thread_unblock (struct thread *t) 
 {
-  enum intr_level old_level;
-
   ASSERT (is_thread (t));
+  ASSERT (t->status == THREAD_BLOCKED);
+
+  enum intr_level old_level;
 
   old_level = intr_disable ();
 
-  ASSERT (t->status == THREAD_BLOCKED);
   list_insert_ordered (&ready_list, &t->elem, priority_high, NULL);
-  //list_push_back (&ready_list, &t->elem);
   t->status = THREAD_READY;
+
   if(thread_current() != idle_thread){
     if (t->priority > thread_current()->priority)
-    thread_yield();
+      thread_yield();
   }
 
   intr_set_level (old_level);
@@ -306,81 +312,35 @@ thread_yield (void)
   old_level = intr_disable ();
   if (curr != idle_thread) {
     list_insert_ordered (&ready_list, &curr->elem, priority_high, NULL);
-    //list_push_back (&ready_list, &curr->elem);
   }
   curr->status = THREAD_READY;
-
   schedule ();
   intr_set_level (old_level);
 }
 
+/* Get highest priority of ready_list */
 int
 get_highest_priority(void){
   return list_entry(list_begin (&ready_list), struct thread, elem)->priority;
 }
-//struct thread *
-//get_highest_priority(void){
-  
-  /*
-  struct list_elem *e;
-  struct thread *t;
-  struct list_elem *highest;
-  int highest_pri= 0;
-  //e = list_begin (&ready_list);
-  for (e = list_begin (&ready_list); e != list_end (&ready_list); e = list_next (e)){
-    t = list_entry (e, struct thread, elem);
-    if ( highest_pri < t->priority){
-      highest_pri = t->priority;
-      highest = e;
-    }
-  }
-  t = list_entry (highest, struct thread, elem);
-  list_remove(highest);*/
-  /*
-  while(e != list_end (&ready_list)){
-    t = list_entry (e, struct thread, elem);
-    e = list_next (e);
-    if ( highest->f < t->priority )
-    {
-      highest = t;    
-    }
-  }*/
-  //list_remove(&highest->elem);
-  //return ;
-//}
+
 /* Sets the current thread's priority to NEW_PRIORITY. */
 void
 thread_set_priority (int new_priority) 
 {
-  //ASSERT(thread_curr
   thread_current ()->ori_priority = new_priority;
-    if (list_empty(&thread_current()->lock_list)){
-        thread_current ()->priority = new_priority;
-
-    if ( get_highest_priority() > thread_current()->priority ){
+  if (list_empty(&thread_current()->lock_list)){
+    thread_current ()->priority = new_priority;
+    if ( get_highest_priority() > thread_current()->priority)
       thread_yield();
-    }
   }
 }
 
 
-
-/* Returns the current thread's **original** priority. */
+/* Returns the current thread's priority. */
 int
 thread_get_priority (void) 
 {
-  /*
-  struct thread *curr = thread_current();
-  int eff_priority ;
-  // if current thread don't have any locks -> 
-  
-  if (list_empty(&curr->lock_list))
-  {
-    eff_priority=  curr->ori_priority;
-  }
-  else eff_priority = curr->priority;
-  return eff_priority;
-  */
   return thread_current()->priority;
 }
 
@@ -495,6 +455,7 @@ init_thread (struct thread *t, const char *name, int priority)
   t->status = THREAD_BLOCKED;
   strlcpy (t->name, name, sizeof t->name);
   t->stack = (uint8_t *) t + PGSIZE;
+  
   t->priority = priority;
   t->ori_priority = priority;
   list_init(&t->lock_list);
@@ -503,12 +464,6 @@ init_thread (struct thread *t, const char *name, int priority)
   
 }
 
-/* return true if first thread is higher 
-static bool
-is_high(struct thread *first, struct thread *second)
-{
-  return first->priority > second->priority;
-} */
 
 /* Allocates a SIZE-byte frame at the top of thread T's stack and
    returns a pointer to the frame's base. */
@@ -535,8 +490,8 @@ next_thread_to_run (void)
     return idle_thread;
   else{
     list_sort (&ready_list, priority_high, NULL);
-    struct thread *t = list_entry (list_pop_front (&ready_list), struct thread, elem);
-    return t;
+  struct thread *t = list_entry (list_pop_front (&ready_list), struct thread, elem);
+  return t;
   }
     
   
@@ -625,19 +580,6 @@ allocate_tid (void)
 /* Offset of `stack' member within `struct thread'.
    Used by switch.S, which can't figure it out on its own. */
 uint32_t thread_stack_ofs = offsetof (struct thread, stack);
-int
-priority_reset(struct thread *t)
-{
-  int eff_priority ;
-  // if current thread don't have any locks -> 
-  
-  if (list_empty(&t->lock_list))
-  {
-    eff_priority=  t->ori_priority;
-  }
-  //else eff_priority = curr->priority;  // highest priority return in lock list 
-  return eff_priority;
-}
 
 bool
 priority_high (const struct list_elem *a_, const struct list_elem *b_, void *aux UNUSED)

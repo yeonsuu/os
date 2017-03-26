@@ -164,6 +164,9 @@ timer_interrupt (struct intr_frame *args UNUSED)
       thread_unblock(list_entry(list_pop_front (&wait_list),
                                 struct thread, elem));
     }
+    else{
+      break;
+    }
   }
   thread_tick ();
 }
