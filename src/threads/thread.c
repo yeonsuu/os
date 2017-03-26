@@ -27,7 +27,6 @@
 /* List of processes in THREAD_READY state, that is, processes
    that are ready to run but not actually running. */
 static struct list ready_list;
-static int highest_pri;
 /* Idle thread. */
 static struct thread *idle_thread;
 
@@ -235,7 +234,6 @@ thread_unblock (struct thread *t)
   //list_push_back (&ready_list, &t->elem);
   t->status = THREAD_READY;
   if(thread_current() != idle_thread){
-  
     if (t->priority > thread_current()->priority)
     thread_yield();
   }
@@ -311,6 +309,7 @@ thread_yield (void)
     //list_push_back (&ready_list, &curr->elem);
   }
   curr->status = THREAD_READY;
+
   schedule ();
   intr_set_level (old_level);
 }
@@ -341,7 +340,7 @@ get_highest_priority(void){
   while(e != list_end (&ready_list)){
     t = list_entry (e, struct thread, elem);
     e = list_next (e);
-    if ( highest->priority < t->priority )
+    if ( highest->f < t->priority )
     {
       highest = t;    
     }
@@ -353,12 +352,15 @@ get_highest_priority(void){
 void
 thread_set_priority (int new_priority) 
 {
-  thread_current ()->priority = new_priority;
+  //ASSERT(thread_curr
+  thread_current ()->ori_priority = new_priority;
+    if (list_empty(&thread_current()->lock_list)){
+        thread_current ()->priority = new_priority;
 
-  if ( get_highest_priority() > thread_current()->priority){
-    thread_yield();
+    if ( get_highest_priority() > thread_current()->priority ){
+      thread_yield();
+    }
   }
-  
 }
 
 
@@ -367,9 +369,19 @@ thread_set_priority (int new_priority)
 int
 thread_get_priority (void) 
 {
-  //msg("tname : %s, priority : %d", thread_current()->name, thread_current()->priority);
-
-  return thread_current ()->priority;
+  /*
+  struct thread *curr = thread_current();
+  int eff_priority ;
+  // if current thread don't have any locks -> 
+  
+  if (list_empty(&curr->lock_list))
+  {
+    eff_priority=  curr->ori_priority;
+  }
+  else eff_priority = curr->priority;
+  return eff_priority;
+  */
+  return thread_current()->priority;
 }
 
 /* Sets the current thread's nice value to NICE. */
@@ -485,9 +497,10 @@ init_thread (struct thread *t, const char *name, int priority)
   t->stack = (uint8_t *) t + PGSIZE;
   t->priority = priority;
   t->ori_priority = priority;
-
+  list_init(&t->lock_list);
+  lock_init(&t->lock_waiter);
   t->magic = THREAD_MAGIC;
-  list_init(&t->donators_list);
+  
 }
 
 /* return true if first thread is higher 
@@ -522,7 +535,8 @@ next_thread_to_run (void)
     return idle_thread;
   else{
     list_sort (&ready_list, priority_high, NULL);
-    return list_entry (list_pop_front (&ready_list), struct thread, elem);
+    struct thread *t = list_entry (list_pop_front (&ready_list), struct thread, elem);
+    return t;
   }
     
   
@@ -600,7 +614,7 @@ allocate_tid (void)
 {
   static tid_t next_tid = 1;
   tid_t tid;
-
+  
   lock_acquire (&tid_lock);
   tid = next_tid++;
   lock_release (&tid_lock);
@@ -611,35 +625,25 @@ allocate_tid (void)
 /* Offset of `stack' member within `struct thread'.
    Used by switch.S, which can't figure it out on its own. */
 uint32_t thread_stack_ofs = offsetof (struct thread, stack);
+int
+priority_reset(struct thread *t)
+{
+  int eff_priority ;
+  // if current thread don't have any locks -> 
+  
+  if (list_empty(&t->lock_list))
+  {
+    eff_priority=  t->ori_priority;
+  }
+  //else eff_priority = curr->priority;  // highest priority return in lock list 
+  return eff_priority;
+}
 
 bool
 priority_high (const struct list_elem *a_, const struct list_elem *b_, void *aux UNUSED)
 {
-  /*if (!list_empty (donated)){
-  priority1 = list_entry (a_, struct thread, elem) -> highest donated
-  priority2 = list_entry (a_, struct thread, elem) -> highest donated
-  }
-  else {
-  priority1= list_entry (a_, struct thread, elem) -> priority;
-  priority2= list_entry (b_, struct thread, elem) -> priority;
-  }
-  */
   const int priority1 = list_entry (a_, struct thread, elem) -> priority;
   const int priority2 = list_entry (b_, struct thread, elem) -> priority;
   return priority1 > priority2;
 }
-bool
-wait_priority_high (const struct list_elem *a_, const struct list_elem *b_, void *aux UNUSED)
-{
-  const int priority1 = list_entry (a_, struct thread, wait_elem) -> priority;
-  const int priority2 = list_entry (b_, struct thread, wait_elem) -> priority;
-  return priority1 > priority2;
-}
 
-bool
-dona_priority_high (const struct list_elem *a_, const struct list_elem *b_, void *aux UNUSED)
-{
-  const int priority1 = list_entry (a_, struct thread, dona_elem) -> priority;
-  const int priority2 = list_entry (b_, struct thread, dona_elem) -> priority;
-  return priority1 > priority2;
-}

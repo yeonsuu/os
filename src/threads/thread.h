@@ -84,11 +84,10 @@ struct thread
     int priority;                       /* Highest Priority. */
     int ori_priority;
     int64_t waitend_ticks;
-    struct list donators_list;          /* donators list */
+    struct list lock_list;              /* lock list */
+    struct lock *lock_waiter;
     /* Shared between thread.c and synch.c. */
     struct list_elem elem;              /* List element. */
-    struct list_elem wait_elem;
-    struct list_elem dona_elem;
 
 #ifdef USERPROG
     /* Owned by userprog/process.c. */
@@ -124,8 +123,7 @@ const char *thread_name (void);
 void thread_exit (void) NO_RETURN;
 void thread_yield (void);
 bool priority_high (const struct list_elem *, const struct list_elem *, void *);
-bool wait_priority_high (const struct list_elem *, const struct list_elem *, void *);
-bool dona_priority_high (const struct list_elem *, const struct list_elem *, void *);
+int priority_reset(struct thread *);
 int get_highest_priority(void);
 int thread_get_priority (void);
 void thread_set_priority (int);
