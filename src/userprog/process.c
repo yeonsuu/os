@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "threads/malloc.h"
 #include "userprog/gdt.h"
 #include "userprog/pagedir.h"
 #include "userprog/tss.h"
@@ -30,7 +31,6 @@ process_execute (const char *file_name)
 {
   char *fn_copy;
   tid_t tid;
-
   /* Make a copy of FILE_NAME.
      Otherwise there's a race between the caller and load(). */
   fn_copy = palloc_get_page (0);
@@ -55,16 +55,66 @@ start_process (void *f_name)
   bool success;
 
   /* Initialize interrupt frame and load executable. */
+  char *s = f_name;
+  char *token, *save_ptr;
+  token = strtok_r (s, " ", &save_ptr);  
+  
   memset (&if_, 0, sizeof if_);
   if_.gs = if_.fs = if_.es = if_.ds = if_.ss = SEL_UDSEG;
   if_.cs = SEL_UCSEG;
   if_.eflags = FLAG_IF | FLAG_MBS;
-  success = load (file_name, &if_.eip, &if_.esp);
+  success = load (token, &if_.eip, &if_.esp);
 
   /* If load failed, quit. */
-  palloc_free_page (file_name);
-  if (!success) 
+  if (!success) {
+    palloc_free_page (file_name);
     thread_exit ();
+  }
+
+  /* Argument Passing */
+  char **argv;
+  int argc = 0;
+  argv = (char **) malloc(100 * sizeof(char *));
+
+  //push argv[n][...]
+  while(token != NULL){
+    if_.esp -= strlen(token) + 1;
+    memcpy(if_.esp, token, strlen(token)+1);
+    argv[argc] = (char *) malloc(sizeof(char *));
+    argv[argc] = if_.esp;
+    argc++;
+    token = strtok_r (NULL, " ", &save_ptr);
+  }
+
+  //push word-align
+  if_.esp -= (uint32_t) if_.esp % 4;
+
+  //push argv[argc]
+  if_.esp -= 4;
+  *(int *)if_.esp = 0;        //*esp 자리에 0 넣기    //NULL pointer sentinel
+  
+  //push argv[n]
+  int i;
+  for (i=argc-1; i>=0; i--){
+    if_.esp -= 4;
+    *(void **) if_.esp = argv[i];
+  }
+
+  //push argv
+  if_.esp -= 4;
+  *(void **) if_.esp = if_.esp +4;       
+  
+  //push argc
+  if_.esp -= 4;
+  *(int *) if_.esp = argc;    
+  
+  //push return address
+  if_.esp -= 4;
+  *(int *) if_.esp = 0;       
+  hex_dump ((uintptr_t) (PHYS_BASE - 200), (void **) (PHYS_BASE-200), 200, true);
+
+  palloc_free_page (file_name);
+
 
   /* Start the user process by simulating a return from an
      interrupt, implemented by intr_exit (in
@@ -88,6 +138,9 @@ start_process (void *f_name)
 int
 process_wait (tid_t child_tid UNUSED) 
 {
+  while (true){
+    continue;
+  }
   return -1;
 }
 
@@ -222,7 +275,9 @@ load (const char *file_name, void (**eip) (void), void **esp)
   process_activate ();
 
   /* Open executable file. */
-  file = filesys_open (file_name);
+  //old_level = intr_disable();
+  file = filesys_open (file_name);   //critical section
+  //intr_set_level(old_level);
   if (file == NULL) 
     {
       printf ("load: %s: open failed\n", file_name);
@@ -436,8 +491,9 @@ setup_stack (void **esp)
   if (kpage != NULL) 
     {
       success = install_page (((uint8_t *) PHYS_BASE) - PGSIZE, kpage, true);
-      if (success)
+      if (success){
         *esp = PHYS_BASE;
+      }
       else
         palloc_free_page (kpage);
     }
@@ -463,3 +519,20 @@ install_page (void *upage, void *kpage, bool writable)
   return (pagedir_get_page (t->pagedir, upage) == NULL
           && pagedir_set_page (t->pagedir, upage, kpage, writable));
 }
+
+
+
+
+/*
+bool
+is_valid_usraddr (void *addr){
+  struct thread *t = thread_current();
+
+  if (is_kernel_vaddr(addr))
+    return false;
+  if (addr == NULL)
+    return false;
+  if (pagedir_get_page (t->pagedir, addr) == NULL)
+    return false;
+
+}*/
