@@ -4,6 +4,7 @@
 #include "threads/interrupt.h"
 #include "threads/thread.h"
 #include "userprog/process.h"
+#include "threads/malloc.h"
 
 
 static void syscall_handler (struct intr_frame *);
@@ -34,100 +35,217 @@ syscall_init (void)
 static void
 syscall_handler (struct intr_frame *f) 
 {
-  
+  struct thread *curr = thread_current();
   //for synchronization
   //intr_disable();			
-  printf ("system call!\n");
   
   //1. Retrieve the system call number
   /*caller's stack pointer의 32-bit word에 system call number 존재
   next higher address 에 다음 argument 들이 있음
   */
-/*
-  if(!is_valid_usraddr(f->esp)){
-  	//terminate user process;
-  }
 
+  /*if(!is_valid_usraddr(f->esp)){
+    
+  	thread_exit ();
+  }*/
   char *sp;
   sp = (char *) malloc (sizeof(char *));
   memcpy(sp, f -> esp, sizeof(char *));
-  hex_dump ((uintptr_t) (sp-100), (void **) (sp-100), 200, true);
+  //hex_dump ((uintptr_t) (sp-100), (void **) (sp-100), 200, true);
 
   uint32_t syscall_number;
 
   syscall_number = *sp;
-  char **arguments;
-  arguments = (char **) malloc ( 4 * sizeof(char*));
+  char **argv;
+  argv = (char **) malloc ( 3 * sizeof(char*));
 
   switch (syscall_number) {
   
   case SYS_HALT :
-  	sys_halt();
+  	//sys_halt();
   	break;
 
   case SYS_EXIT :
-  	sys_exit(args[0]);
+    syscall_arguments(argv, sp, 1);
+  	sys_exit((int)*argv[0]);
   break;
 
-  case SYS_EXEC :                   
-  	sys_exec(args[0]);
-  	eax;
+  case SYS_EXEC :   
+    syscall_arguments(argv, sp, 1);          
+  	//sys_exec(argv[0]);
   break;
 
   case SYS_WAIT :
-  	sys_wait(args[0]);
-  	eax;
+    syscall_arguments(argv, sp, 1);
+  	//sys_wait(argv[0]);
   	break;        
 
-  case SYS_CREATE :                
-  	sys_create(args[0], args[1]);
-  	eax;
+  case SYS_CREATE :
+    syscall_arguments(argv, sp, 2);               
+  	//sys_create(argv[0], argv[1]);
   	break;
 
-  case SYS_REMOVE :                
-  	sys_remove(args[0]);
-  	eax;
+  case SYS_REMOVE :   
+    syscall_arguments(argv, sp, 1);     
+  	//sys_remove(argv[0]);
   	break;
 
-  case SYS_OPEN :               
-  	sys_open(args[0]);
-  	eax;
+  case SYS_OPEN :  
+    syscall_arguments(argv, sp, 1);
+  	//sys_open(argv[0]);
   	break;
 
   case SYS_FILESIZE :
-  	sys_filesize(args[0]);;
-  	eax;
+    syscall_arguments(argv, sp, 1);
+  	//sys_filesize(argv[0]);
   	break;
 
-  case SYS_READ :          
-  	sys_read(args[0], args[1], args[2]);
-  	eax;
+  case SYS_READ :   
+    syscall_arguments(argv, sp, 3);
+  	//sys_read(argv[0], argv[1], argv[2]);
   	break;
 
   case SYS_WRITE : 
-  	sys_write(args[0], args[1], args[2]);
-  	eax;
+    syscall_arguments(argv, sp, 3);
+  	//sys_write(argv[0], argv[1], argv[2]);
   	break;
 
   case SYS_SEEK :
-  	sys_seek(args[0], args[1]);  
-  	eax;          
+    syscall_arguments(argv, sp, 2);
+  	//sys_seek(argv[0], argv[1]);  
   	break;
 
-  case SYS_TELL :     
-  	sys_tell(args[0]);
-  	eax;
+  case SYS_TELL :  
+    syscall_arguments(argv, sp, 1);
+  	//sys_tell(argv[0]);
   	break;
 
-  case SYS_CLOSE :   
-  	sys_close(args[0]);
+  case SYS_CLOSE : 
+    syscall_arguments(argv, sp, 1);
+  	//sys_close(argv[0]);
   	break;
  }
- */
-  thread_exit ();
+ 
+  //thread_exit ();
+}
+
+
+void
+syscall_arguments(char **argv, char *sp, int argc) {
+  int i;
+  for (i = 0; i < argc; i++)
+  {
+    sp+=4;
+    if(!is_valid_usraddr((void *)sp)){    //실제로 여기 들어가면 안됨
+      sys_exit(-1);  
+    }
+    
+    argv[i] = *(sp);
+  }
 }
 
 
 
 
 
+
+/* Terminate Pintos */
+void
+sys_halt()
+{
+  power_off();
+}
+
+/* Terminate current user program. Return status to the kernel
+If the process's parent waits for it, this is the status that will be returned
+A status of 0 indicates success and nonzero values indicate errors */
+void
+sys_exit(int status)
+{
+  printf("%s: exit(%d)\n", thread_name(), status);
+  thread_exit();
+}
+
+
+
+
+
+/* Runs the executable whose name is given in cmd_line, and returns the new process's program id (pid)
+   Return pid -1 if program cannot load or run 
+   -> process_execute(cmd_line)
+
+parent process cannot return from the exec until it knows whether the child process successfully loaded its excutable 
+==> SYNCHRONIZATION 
+
+INPUT : excecutable's name
+
+OUTPUT : new process's program id (pid)
+*/
+pid_t
+sys_exec(const char *cmd_line)
+{
+   process_execute(cmd_line);
+}
+
+/* Waits for a child process pid and retrieves the child's exit status */
+int
+sys_wait(pid_t pid)
+{
+
+  eax;
+}
+
+/*  */
+void
+sys_create(args[0], args[1])
+{
+  eax;
+}
+
+void
+sys_remove(args[0])
+{
+  eax;
+}
+
+void
+sys_open(args[0])
+{
+  eax;
+}
+
+void
+sys_filesize(args[0])
+{
+  eax;
+}
+
+void
+sys_read(args[0], args[1], args[2])
+{
+  eax;
+}
+
+void
+sys_write(args[0], args[1], args[2])
+{
+  eax;
+}
+
+void
+sys_seek(args[0], args[1])
+{
+  eax;
+}
+
+void
+sys_tell(args[0])
+{
+  eax;
+}
+
+void
+sys_close(args[0])
+{
+
+}

@@ -18,10 +18,14 @@
 #include "threads/palloc.h"
 #include "threads/thread.h"
 #include "threads/vaddr.h"
+#include "threads/synch.h"
+
 
 static thread_func start_process NO_RETURN;
 static bool load (const char *cmdline, void (**eip) (void), void **esp);
 
+struct semaphore sema_process;
+//sema_init(sema_process, 0);
 /* Starts a new thread running a user program loaded from
    FILENAME.  The new thread may be scheduled (and may even exit)
    before process_execute() returns.  Returns the new process's
@@ -37,11 +41,16 @@ process_execute (const char *file_name)
   if (fn_copy == NULL)
     return TID_ERROR;
   strlcpy (fn_copy, file_name, PGSIZE);
+  
+  char *s = file_name;
+  char *t_name, *save_ptr;
+  t_name = strtok_r (s, " ", &save_ptr);  
 
   /* Create a new thread to execute FILE_NAME. */
-  tid = thread_create (file_name, PRI_DEFAULT, start_process, fn_copy);
+  tid = thread_create (t_name, PRI_DEFAULT, start_process, fn_copy);
   if (tid == TID_ERROR)
     palloc_free_page (fn_copy); 
+
   return tid;
 }
 
@@ -111,7 +120,6 @@ start_process (void *f_name)
   //push return address
   if_.esp -= 4;
   *(int *) if_.esp = 0;       
-  hex_dump ((uintptr_t) (PHYS_BASE - 200), (void **) (PHYS_BASE-200), 200, true);
 
   palloc_free_page (file_name);
 
@@ -136,11 +144,10 @@ start_process (void *f_name)
    This function will be implemented in problem 2-2.  For now, it
    does nothing. */
 int
-process_wait (tid_t child_tid UNUSED) 
+process_wait (tid_t child_tid) 
 {
-  while (true){
-    continue;
-  }
+  sema_init(&sema_process, 0);
+  sema_down(&sema_process);
   return -1;
 }
 
@@ -150,7 +157,6 @@ process_exit (void)
 {
   struct thread *curr = thread_current ();
   uint32_t *pd;
-
   /* Destroy the current process's page directory and switch back
      to the kernel-only page directory. */
   pd = curr->pagedir;
@@ -167,6 +173,7 @@ process_exit (void)
       pagedir_activate (NULL);
       pagedir_destroy (pd);
     }
+  sema_up(&sema_process);
 }
 
 /* Sets up the CPU for running user code in the current
@@ -523,16 +530,18 @@ install_page (void *upage, void *kpage, bool writable)
 
 
 
-/*
+
 bool
 is_valid_usraddr (void *addr){
   struct thread *t = thread_current();
-
-  if (is_kernel_vaddr(addr))
+  if (is_kernel_vaddr(addr)){
+      return false;
+  }
+  if (!addr){
     return false;
-  if (addr == NULL)
+  }
+  if (pagedir_get_page (t->pagedir, addr) == NULL){
     return false;
-  if (pagedir_get_page (t->pagedir, addr) == NULL)
-    return false;
-
-}*/
+  }
+  
+}
