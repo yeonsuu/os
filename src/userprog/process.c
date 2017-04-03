@@ -24,8 +24,11 @@
 static thread_func start_process NO_RETURN;
 static bool load (const char *cmdline, void (**eip) (void), void **esp);
 
-struct semaphore sema_process;
-//sema_init(sema_process, 0);
+struct semaphore sema_pwait;
+struct semaphore sema_pexec;
+
+bool exec_success;
+//sema_init(sema_pwait, 0);
 /* Starts a new thread running a user program loaded from
    FILENAME.  The new thread may be scheduled (and may even exit)
    before process_execute() returns.  Returns the new process's
@@ -35,6 +38,7 @@ process_execute (const char *file_name)
 {
   char *fn_copy;
   tid_t tid;
+  //sema_init(&sema_pexec, 0);
   /* Make a copy of FILE_NAME.
      Otherwise there's a race between the caller and load(). */
   fn_copy = palloc_get_page (0);
@@ -48,9 +52,14 @@ process_execute (const char *file_name)
 
   /* Create a new thread to execute FILE_NAME. */
   tid = thread_create (t_name, PRI_DEFAULT, start_process, fn_copy);
+
+
   if (tid == TID_ERROR)
     palloc_free_page (fn_copy); 
-
+  
+  //sema_down(&sema_pwait);
+  //if (!exec_success)
+  //  tid = -1;
   return tid;
 }
 
@@ -73,11 +82,14 @@ start_process (void *f_name)
   if_.cs = SEL_UCSEG;
   if_.eflags = FLAG_IF | FLAG_MBS;
   success = load (token, &if_.eip, &if_.esp);
-
+  
+  exec_success = success;
+  //sema_up(&sema_pwait);
   /* If load failed, quit. */
   if (!success) {
     palloc_free_page (file_name);
     thread_exit ();
+
   }
 
   /* Argument Passing */
@@ -144,10 +156,10 @@ start_process (void *f_name)
    This function will be implemented in problem 2-2.  For now, it
    does nothing. */
 int
-process_wait (tid_t child_tid) 
+process_wait (tid_t child_tid UNUSED) 
 {
-  sema_init(&sema_process, 0);
-  sema_down(&sema_process);
+  sema_init(&sema_pwait, 0);
+  sema_down(&sema_pwait);       
   return -1;
 }
 
@@ -173,7 +185,7 @@ process_exit (void)
       pagedir_activate (NULL);
       pagedir_destroy (pd);
     }
-  sema_up(&sema_process);
+  sema_up(&sema_pwait);
 }
 
 /* Sets up the CPU for running user code in the current
@@ -534,14 +546,17 @@ install_page (void *upage, void *kpage, bool writable)
 bool
 is_valid_usraddr (void *addr){
   struct thread *t = thread_current();
-  if (is_kernel_vaddr(addr)){
+  void *temp = addr;
+  if (is_kernel_vaddr(temp)){
       return false;
   }
-  if (!addr){
+  if (temp == NULL){
     return false;
   }
-  if (pagedir_get_page (t->pagedir, addr) == NULL){
+  if (pagedir_get_page (t->pagedir, temp) == NULL){
     return false;
   }
+  else 
+    return true;
   
 }

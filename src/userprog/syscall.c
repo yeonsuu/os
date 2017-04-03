@@ -37,7 +37,6 @@ syscall_handler (struct intr_frame *f)
 {
   struct thread *curr = thread_current();
   //for synchronization
-  //intr_disable();			
   
   //1. Retrieve the system call number
   /*caller's stack pointer의 32-bit word에 system call number 존재
@@ -50,8 +49,10 @@ syscall_handler (struct intr_frame *f)
   }*/
   char *sp;
   sp = (char *) malloc (sizeof(char *));
-  memcpy(sp, f -> esp, sizeof(char *));
-  //hex_dump ((uintptr_t) (sp-100), (void **) (sp-100), 200, true);
+  //memcpy(sp, f->esp, sizeof(char *));
+  sp = f->esp;
+  
+  //hex_dump ((uintptr_t) (f->esp -100), (void **) (sp-100), 200, true);
 
   uint32_t syscall_number;
 
@@ -62,7 +63,7 @@ syscall_handler (struct intr_frame *f)
   switch (syscall_number) {
   
   case SYS_HALT :
-  	//sys_halt();
+  	sys_halt();
   	break;
 
   case SYS_EXIT :
@@ -72,7 +73,7 @@ syscall_handler (struct intr_frame *f)
 
   case SYS_EXEC :   
     syscall_arguments(argv, sp, 1);          
-  	//sys_exec(argv[0]);
+  	f -> eax = sys_exec((char *)*argv[0]);
   break;
 
   case SYS_WAIT :
@@ -106,8 +107,14 @@ syscall_handler (struct intr_frame *f)
   	break;
 
   case SYS_WRITE : 
+    //printf("%d\n", *(sp+4));
+
     syscall_arguments(argv, sp, 3);
-  	//sys_write(argv[0], argv[1], argv[2]);
+
+    //printf("1 : %d, 2: %p, 3: %d", *argv[0], *((int *)argv[1]), (unsigned)*argv[2]);
+    //hex_dump ((uintptr_t) (sp -100), (void **) (sp-100), 200, true);
+
+  	f->eax = sys_write((int)*argv[0], *((int *)argv[1]), (unsigned)*argv[2]);
   	break;
 
   case SYS_SEEK :
@@ -139,8 +146,8 @@ syscall_arguments(char **argv, char *sp, int argc) {
     if(!is_valid_usraddr((void *)sp)){    //실제로 여기 들어가면 안됨
       sys_exit(-1);  
     }
+    argv[i] = sp;
     
-    argv[i] = *(sp);
   }
 }
 
@@ -151,7 +158,7 @@ syscall_arguments(char **argv, char *sp, int argc) {
 
 /* Terminate Pintos */
 void
-sys_halt()
+sys_halt(void)
 {
   power_off();
 }
@@ -162,6 +169,7 @@ A status of 0 indicates success and nonzero values indicate errors */
 void
 sys_exit(int status)
 {
+
   printf("%s: exit(%d)\n", thread_name(), status);
   thread_exit();
 }
@@ -181,21 +189,24 @@ INPUT : excecutable's name
 
 OUTPUT : new process's program id (pid)
 */
-pid_t
+int
 sys_exec(const char *cmd_line)
 {
-   process_execute(cmd_line);
-}
+  ASSERT(0);
+   return process_execute(cmd_line);
 
+
+}
 /* Waits for a child process pid and retrieves the child's exit status */
+/*
 int
 sys_wait(pid_t pid)
 {
 
   eax;
 }
-
-/*  */
+*/
+/*
 void
 sys_create(args[0], args[1])
 {
@@ -225,13 +236,19 @@ sys_read(args[0], args[1], args[2])
 {
   eax;
 }
-
-void
-sys_write(args[0], args[1], args[2])
+*/
+/* return the number of bytes actually written*/
+int
+sys_write(int fd, const void *buffer, unsigned size)
 {
-  eax;
+  int bytes = 0;
+  if (fd == 1){
+    putbuf (buffer, size);
+    bytes = size;
+  }
+  return bytes;
 }
-
+/*
 void
 sys_seek(args[0], args[1])
 {
@@ -249,3 +266,4 @@ sys_close(args[0])
 {
 
 }
+*/
