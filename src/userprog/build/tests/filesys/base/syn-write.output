@@ -1,0 +1,53 @@
+Copying tests/filesys/base/syn-write into /tmp/gY0f8T676I.dsk...
+Copying tests/filesys/base/child-syn-wrt into /tmp/gY0f8T676I.dsk...
+Writing command line to /tmp/JmBMTmKrza.dsk...
+qemu -hda /tmp/JmBMTmKrza.dsk -hdb /tmp/RkMaB7hP8m.dsk -hdc /tmp/gY0f8T676I.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put syn-write put child-syn-wrt run syn-write
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 160 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'syn-write' into the file system...
+Putting 'child-syn-wrt' into the file system...
+Executing 'syn-write':
+(syn-write) begin
+(syn-write) create "stuff"
+(syn-write) exec child 1 of 10: "child-syn-wrt 0"
+((null)) write "stuff": FAILED
+child-syn-wrt: exit(1)
+(syn-write) exec child 2 of 10: "child-syn-wrt 1"
+((null)) write "stuff": FAILED
+child-syn-wrt: exit(1)
+(syn-write) exec child 3 of 10: "child-syn-wrt 2"
+((null)) write "stuff": FAILED
+child-syn-wrt: exit(1)
+(syn-write) exec child 4 of 10: "child-syn-wrt 3"
+((null)) write "stuff": FAILED
+child-syn-wrt: exit(1)
+(syn-write) exec child 5 of 10: "child-syn-wrt 4"
+((null)) write "stuff": FAILED
+child-syn-wrt: exit(1)
+(syn-write) exec child 6 of 10: "child-syn-wrt 5"
+((null)) write "stuff": FAILED
+child-syn-wrt: exit(1)
+(syn-write) exec child 7 of 10: "child-syn-wrt 6"
+((null)) write "stuff": FAILED
+child-syn-wrt: exit(1)
+(syn-write) exec child 8 of 10: "child-syn-wrt 7"
+((null)) write "stuff": FAILED
+child-syn-wrt: exit(1)
+(syn-write) exec child 9 of 10: "child-syn-wrt 8"
+((null)) write "stuff": FAILED
+child-syn-wrt: exit(1)
+(syn-write) exec child 10 of 10: "child-syn-wrt 9"
+((null)) write "stuff": FAILED
+child-syn-wrt: exit(1)
+(syn-write) wait for child 1 of 10 returned 1 (expected 0)
+(syn-write) wait for child 1 of 10 returned 1 (expected 0): FAILED
+syn-write: exit(1)
+Simulation terminated due to test failure.

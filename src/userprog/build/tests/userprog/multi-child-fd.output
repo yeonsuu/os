@@ -1,0 +1,29 @@
+Copying tests/userprog/multi-child-fd into /tmp/0ElgzXlbrR.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/0ElgzXlbrR.dsk...
+Copying tests/userprog/child-close into /tmp/0ElgzXlbrR.dsk...
+Writing command line to /tmp/znk0lMLL34.dsk...
+qemu -hda /tmp/znk0lMLL34.dsk -hdb /tmp/9WNDVy8rZ8.dsk -hdc /tmp/0ElgzXlbrR.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put multi-child-fd put sample.txt put child-close run multi-child-fd
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 156 sector (78 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'multi-child-fd' into the file system...
+Putting 'sample.txt' into the file system...
+Putting 'child-close' into the file system...
+Executing 'multi-child-fd':
+(multi-child-fd) begin
+(multi-child-fd) open "sample.txt"
+(child-close) begin
+(child-close) end
+child-close: exit(0)
+(multi-child-fd) wait(exec()) = 0
+(multi-child-fd) size of sample.txt (134522362) differs from expected (239)
+(multi-child-fd) read of 239 bytes at offset 0 in "sample.txt" returned 134522362: FAILED
+multi-child-fd: exit(1)
+Simulation terminated due to test failure.

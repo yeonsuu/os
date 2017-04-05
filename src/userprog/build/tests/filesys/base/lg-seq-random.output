@@ -1,0 +1,31 @@
+Copying tests/filesys/base/lg-seq-random into /tmp/ArpcotunIL.dsk...
+Writing command line to /tmp/oPWC8CB7bS.dsk...
+qemu -hda /tmp/oPWC8CB7bS.dsk -hdb /tmp/ei4OsexcT6.dsk -hdc /tmp/ArpcotunIL.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put lg-seq-random run lg-seq-random
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 76 sector (38 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'lg-seq-random' into the file system...
+Executing 'lg-seq-random':
+(lg-seq-random) begin
+(lg-seq-random) create "nibble"
+(lg-seq-random) open "nibble"
+(lg-seq-random) writing "nibble"
+(lg-seq-random) write 717 bytes at offset 0 in "nibble" failed: FAILED
+lg-seq-random: exit(1)
+Execution of 'lg-seq-random' complete.
+Timer: 68 ticks
+Thread: 0 idle ticks, 66 kernel ticks, 2 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 59 reads, 160 writes
+hd1:0: 76 reads, 0 writes
+Console: 972 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...

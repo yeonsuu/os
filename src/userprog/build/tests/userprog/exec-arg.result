@@ -1,0 +1,24 @@
+FAIL
+Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
+Call stack: 0xc0107256 0xc010a75f 0xc010a819 0xc0101725 0xc01018fb 0xc0106bdc 0xc01093a5 0xc010aae0 0xc010a902 0xc0101725 0xc01018fb 0x8049fe5 0x80480b2 0x80480ef 0x80486c8
+Translation of call stack:
+In kernel.o:
+0xc0107256: debug_panic (.../../lib/kernel/debug.c:34)
+0xc010a75f: kill (.../userprog/exception.c:105)
+0xc010a819: page_fault (.../userprog/exception.c:160)
+0xc0101725: intr_handler (..../threads/interrupt.c:361)
+0xc01018fb: intr_entry (threads/intr-stubs.S:38)
+0xc0106bdc: strtok_r (...ld/../../lib/string.c:269)
+0xc01093a5: process_execute (.../../userprog/process.c:59)
+0xc010aae0: sys_exec (...../userprog/syscall.c:179)
+0xc010a902: syscall_handler (.../../userprog/syscall.c:64)
+0xc0101725: intr_handler (..../threads/interrupt.c:361)
+0xc01018fb: intr_entry (threads/intr-stubs.S:38)
+In tests/userprog/exec-arg:
+0x08049fe5: exec (.../../lib/user/syscall.c:81)
+0x080480b2: test_main (...sts/userprog/exec-arg.c:9)
+0x080480ef: main (...ild/../../tests/main.c:13)
+0x080486c8: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
