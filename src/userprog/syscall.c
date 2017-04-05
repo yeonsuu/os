@@ -27,6 +27,7 @@ syscall_init (void)
 
 3. Call proper syscall function (convention for function return values is to place them in the EAX register intr_frame->eax)
 
+
 + Sole way a user program should be able to cause the OS to halt is by invoking the 'halt' system call
 + If a system call is passed an invalid argument, acceptable options include returning an error value (for those calls that return a value),
   returning an undefined value, or terminating the process
@@ -35,90 +36,104 @@ static void
 syscall_handler (struct intr_frame *f) 
 {
   struct thread *curr = thread_current();
-  /* 
-  1. For SYNCHRONIZATION
-  enum intr_level old_level;
-  */
-
-
-  /*
-  2. Retrieve the system call number
-  caller's stack pointer의 32-bit word에 system call number 존재
+  //for synchronization
+  
+  //1. Retrieve the system call number
+  /*caller's stack pointer의 32-bit word에 system call number 존재
   next higher address 에 다음 argument 들이 있음
   */
-  uint32_t *sp = f->esp;
-  uint32_t **argv;
-  argv = (uint32_t **) malloc (3 * sizeof(uint32_t *));
 
-  if(!is_valid_usraddr(sp)){ 
-    thread_exit ();
-  }
+  /*if(!is_valid_usraddr(f->esp)){
+    
+  	thread_exit ();
+  }*/
+  char *sp;
+  sp = (char *) malloc (sizeof(char *));
+  //memcpy(sp, f->esp, sizeof(char *));
+  sp = f->esp;
+  
+  //hex_dump ((uintptr_t) (f->esp -100), (void **) (sp-100), 200, true);
 
-  switch (*sp) {   
-    case SYS_HALT :
-    	sys_halt();
-      break;
+  uint32_t syscall_number;
 
-    case SYS_EXIT :
-      syscall_arguments(argv, sp, 1);
-    	sys_exit((int)*argv[0]);
-      break;
+  syscall_number = *sp;
+  char **argv;
+  argv = (char **) malloc ( 3 * sizeof(char*));
 
-    case SYS_EXEC :   
-      syscall_arguments(argv, sp, 1);          
-    	f -> eax = sys_exec((char *)*argv[0]);
-      break;
+  switch (syscall_number) {
+  
+  case SYS_HALT :
+  	sys_halt();
+  	break;
 
-    case SYS_WAIT :
-      syscall_arguments(argv, sp, 1);
-    	//sys_wait(argv[0]);
-    	break;        
+  case SYS_EXIT :
+    syscall_arguments(argv, sp, 1);
+  	sys_exit((int)*argv[0]);
+  break;
 
-    case SYS_CREATE :
-      syscall_arguments(argv, sp, 2);               
-    	//sys_create(argv[0], argv[1]);
-    	break;
+  case SYS_EXEC :   
+    syscall_arguments(argv, sp, 1);          
+  	f -> eax = sys_exec((char *)*argv[0]);
+  break;
 
-    case SYS_REMOVE :   
-      syscall_arguments(argv, sp, 1);     
-    	//sys_remove(argv[0]);
-    	break;
+  case SYS_WAIT :
+    syscall_arguments(argv, sp, 1);
+  	//sys_wait(argv[0]);
+  	break;        
 
-    case SYS_OPEN :  
-      syscall_arguments(argv, sp, 1);
-    	//sys_open(argv[0]);
-    	break;
+  case SYS_CREATE :
+    syscall_arguments(argv, sp, 2);               
+  	//sys_create(argv[0], argv[1]);
+  	break;
 
-    case SYS_FILESIZE :
-      syscall_arguments(argv, sp, 1);
-    	//sys_filesize(argv[0]);
-    	break;
+  case SYS_REMOVE :   
+    syscall_arguments(argv, sp, 1);     
+  	//sys_remove(argv[0]);
+  	break;
 
-    case SYS_READ :   
-      syscall_arguments(argv, sp, 3);
-    	//sys_read(argv[0], argv[1], argv[2]);
-    	break;
+  case SYS_OPEN :  
+    syscall_arguments(argv, sp, 1);
+  	//sys_open(argv[0]);
+  	break;
 
-    case SYS_WRITE : 
-      syscall_arguments(argv, sp, 3);
-    	f->eax = sys_write(*argv[0], *((uint32_t *)argv[1]), *argv[2]);
-    	break;
+  case SYS_FILESIZE :
+    syscall_arguments(argv, sp, 1);
+  	//sys_filesize(argv[0]);
+  	break;
 
-    case SYS_SEEK :
-      syscall_arguments(argv, sp, 2);
-    	//sys_seek(argv[0], argv[1]);  
-    	break;
+  case SYS_READ :   
+    syscall_arguments(argv, sp, 3);
+  	//sys_read(argv[0], argv[1], argv[2]);
+  	break;
 
-    case SYS_TELL :  
-      syscall_arguments(argv, sp, 1);
-    	//sys_tell(argv[0]);
-    	break;
+  case SYS_WRITE : 
+    //printf("%d\n", *(sp+4));
 
-    case SYS_CLOSE : 
-      syscall_arguments(argv, sp, 1);
-    	//sys_close(argv[0]);
-    	break;
-  }
+    syscall_arguments(argv, sp, 3);
+
+    //printf("1 : %d, 2: %p, 3: %d", *argv[0], *((int *)argv[1]), (unsigned)*argv[2]);
+    //hex_dump ((uintptr_t) (sp -100), (void **) (sp-100), 200, true);
+
+  	f->eax = sys_write((int)*argv[0], *((int *)argv[1]), (unsigned)*argv[2]);
+  	break;
+
+  case SYS_SEEK :
+    syscall_arguments(argv, sp, 2);
+  	//sys_seek(argv[0], argv[1]);  
+  	break;
+
+  case SYS_TELL :  
+    syscall_arguments(argv, sp, 1);
+  	//sys_tell(argv[0]);
+  	break;
+
+  case SYS_CLOSE : 
+    syscall_arguments(argv, sp, 1);
+  	//sys_close(argv[0]);
+  	break;
+ }
+ 
+  //thread_exit ();
 }
 
 
@@ -128,12 +143,16 @@ syscall_arguments(char **argv, char *sp, int argc) {
   for (i = 0; i < argc; i++)
   {
     sp+=4;
-    if(!is_valid_usraddr((void *)sp))
-      sys_exit(-1);
-
+    if(!is_valid_usraddr((void *)sp)){    //실제로 여기 들어가면 안됨
+      sys_exit(-1);  
+    }
     argv[i] = sp;
+    
   }
 }
+
+
+
 
 
 
@@ -155,6 +174,10 @@ sys_exit(int status)
   thread_exit();
 }
 
+
+
+
+
 /* Runs the executable whose name is given in cmd_line, and returns the new process's program id (pid)
    Return pid -1 if program cannot load or run 
    -> process_execute(cmd_line)
@@ -171,6 +194,8 @@ sys_exec(const char *cmd_line)
 {
   ASSERT(0);
    return process_execute(cmd_line);
+
+
 }
 /* Waits for a child process pid and retrieves the child's exit status */
 /*
