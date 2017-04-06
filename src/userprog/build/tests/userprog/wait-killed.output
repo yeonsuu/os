@@ -1,7 +1,7 @@
-Copying tests/userprog/wait-killed into /tmp/vJrTyeCZzq.dsk...
-Copying tests/userprog/child-bad into /tmp/vJrTyeCZzq.dsk...
-Writing command line to /tmp/6u7Jnp6XnG.dsk...
-qemu -hda /tmp/6u7Jnp6XnG.dsk -hdb /tmp/1WhlOLQQTm.dsk -hdc /tmp/vJrTyeCZzq.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/wait-killed into /tmp/BUyF93kiLo.dsk...
+Copying tests/userprog/child-bad into /tmp/BUyF93kiLo.dsk...
+Writing command line to /tmp/Qnzah92viK.dsk...
+qemu -hda /tmp/Qnzah92viK.dsk -hdb /tmp/FCrB5gRVbJ.dsk -hdc /tmp/BUyF93kiLo.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put wait-killed put child-bad run wait-killed
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -21,5 +21,13 @@ child-bad: exit(-1)
 (wait-killed) wait(exec()) = -1
 (wait-killed) end
 wait-killed: exit(0)
-
-TIMEOUT after 61 seconds of wall-clock time - load average: 0.02, 0.07, 0.03
+Execution of 'wait-killed' complete.
+Timer: 74 ticks
+Thread: 0 idle ticks, 72 kernel ticks, 2 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 116 reads, 302 writes
+hd1:0: 146 reads, 0 writes
+Console: 941 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...

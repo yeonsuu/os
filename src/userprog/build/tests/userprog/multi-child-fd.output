@@ -1,8 +1,8 @@
-Copying tests/userprog/multi-child-fd into /tmp/0ElgzXlbrR.dsk...
-Copying ../../tests/userprog/sample.txt into /tmp/0ElgzXlbrR.dsk...
-Copying tests/userprog/child-close into /tmp/0ElgzXlbrR.dsk...
-Writing command line to /tmp/znk0lMLL34.dsk...
-qemu -hda /tmp/znk0lMLL34.dsk -hdb /tmp/9WNDVy8rZ8.dsk -hdc /tmp/0ElgzXlbrR.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/multi-child-fd into /tmp/lEXiIsdWP5.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/lEXiIsdWP5.dsk...
+Copying tests/userprog/child-close into /tmp/lEXiIsdWP5.dsk...
+Writing command line to /tmp/nVjhaiVBNS.dsk...
+qemu -hda /tmp/nVjhaiVBNS.dsk -hdb /tmp/maOwrO03Dl.dsk -hdc /tmp/lEXiIsdWP5.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put multi-child-fd put sample.txt put child-close run multi-child-fd
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -22,8 +22,17 @@ Executing 'multi-child-fd':
 (child-close) begin
 (child-close) end
 child-close: exit(0)
-(multi-child-fd) wait(exec()) = 0
+(multi-child-fd) wait(exec()) = -1
 (multi-child-fd) size of sample.txt (134522362) differs from expected (239)
 (multi-child-fd) read of 239 bytes at offset 0 in "sample.txt" returned 134522362: FAILED
 multi-child-fd: exit(1)
-Simulation terminated due to test failure.
+Execution of 'multi-child-fd' complete.
+Timer: 77 ticks
+Thread: 0 idle ticks, 74 kernel ticks, 3 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 162 reads, 324 writes
+hd1:0: 156 reads, 0 writes
+Console: 1233 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...

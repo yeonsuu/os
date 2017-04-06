@@ -1,7 +1,7 @@
-Copying tests/userprog/exec-once into /tmp/Ch1EodQX36.dsk...
-Copying tests/userprog/child-simple into /tmp/Ch1EodQX36.dsk...
-Writing command line to /tmp/RF63hHIGTf.dsk...
-qemu -hda /tmp/RF63hHIGTf.dsk -hdb /tmp/5p2UDC9VBj.dsk -hdc /tmp/Ch1EodQX36.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/exec-once into /tmp/0uNWPDdeRM.dsk...
+Copying tests/userprog/child-simple into /tmp/0uNWPDdeRM.dsk...
+Writing command line to /tmp/VSfFO6IRka.dsk...
+qemu -hda /tmp/VSfFO6IRka.dsk -hdb /tmp/CkxLraxgvY.dsk -hdc /tmp/0uNWPDdeRM.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put exec-once put child-simple run exec-once
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -20,5 +20,13 @@ Executing 'exec-once':
 child-simple: exit(81)
 (exec-once) end
 exec-once: exit(0)
-
-TIMEOUT after 61 seconds of wall-clock time - load average: 0.22, 0.12, 0.04
+Execution of 'exec-once' complete.
+Timer: 76 ticks
+Thread: 0 idle ticks, 74 kernel ticks, 2 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 120 reads, 300 writes
+hd1:0: 145 reads, 0 writes
+Console: 903 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...

@@ -1,6 +1,6 @@
-Copying tests/userprog/exec-missing into /tmp/Wa3Gc1xTyu.dsk...
-Writing command line to /tmp/btKYmmSe2V.dsk...
-qemu -hda /tmp/btKYmmSe2V.dsk -hdb /tmp/FIfcz7mOKX.dsk -hdc /tmp/Wa3Gc1xTyu.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/exec-missing into /tmp/5DV87xLNid.dsk...
+Writing command line to /tmp/7VbAKYghlr.dsk...
+qemu -hda /tmp/7VbAKYghlr.dsk -hdb /tmp/cAfr4LhPwK.dsk -hdc /tmp/5DV87xLNid.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put exec-missing run exec-missing
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -19,5 +19,13 @@ no-such-file: exit(-1)
 (exec-missing) exec("no-such-file"): -1
 (exec-missing) end
 exec-missing: exit(0)
-
-TIMEOUT after 61 seconds of wall-clock time - load average: 0.05, 0.10, 0.04
+Execution of 'exec-missing' complete.
+Timer: 64 ticks
+Thread: 0 idle ticks, 62 kernel ticks, 2 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 76 reads, 154 writes
+hd1:0: 73 reads, 0 writes
+Console: 913 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...

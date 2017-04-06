@@ -1,7 +1,7 @@
-Copying tests/userprog/wait-twice into /tmp/cpsXL8deLx.dsk...
-Copying tests/userprog/child-simple into /tmp/cpsXL8deLx.dsk...
-Writing command line to /tmp/brcMzMPKdj.dsk...
-qemu -hda /tmp/brcMzMPKdj.dsk -hdb /tmp/JumTCutjDt.dsk -hdc /tmp/cpsXL8deLx.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/wait-twice into /tmp/foOGzMehGz.dsk...
+Copying tests/userprog/child-simple into /tmp/foOGzMehGz.dsk...
+Writing command line to /tmp/8vzPp6i2hl.dsk...
+qemu -hda /tmp/8vzPp6i2hl.dsk -hdb /tmp/3AdbTgj0lE.dsk -hdc /tmp/foOGzMehGz.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put wait-twice put child-simple run wait-twice
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -18,9 +18,17 @@ Executing 'wait-twice':
 (wait-twice) begin
 (child-simple) run
 child-simple: exit(81)
-(wait-twice) wait(exec()) = 81
-(wait-twice) wait(exec()) = 81
+(wait-twice) wait(exec()) = -1
+(wait-twice) wait(exec()) = -1
 (wait-twice) end
 wait-twice: exit(0)
-
-TIMEOUT after 61 seconds of wall-clock time - load average: 0.06, 0.08, 0.04
+Execution of 'wait-twice' complete.
+Timer: 75 ticks
+Thread: 0 idle ticks, 73 kernel ticks, 2 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 120 reads, 300 writes
+hd1:0: 145 reads, 0 writes
+Console: 973 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...

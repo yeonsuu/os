@@ -2,6 +2,7 @@
 #include "userprog/syscall.h"
 
 #include <debug.h>
+#include <list.h>
 #include <inttypes.h>
 #include <round.h>
 #include <stdio.h>
@@ -26,12 +27,19 @@
 static thread_func start_process NO_RETURN;
 static bool load (const char *cmdline, void (**eip) (void), void **esp);
 
-struct semaphore sema_pexit;
-struct semaphore sema_pexec;
-int exit_status;
-bool exec_success = true;
-bool isDead = false;
-//sema_init(sema_pwait, 0);
+
+struct list process_list;
+
+
+void
+process_init (void)
+{
+  list_init(&process_list);
+  struct process *initial_process;
+  initial_process = malloc(sizeof *initial_process);
+  initial_process -> pid = thread_current() -> tid;
+  list_push_back(&process_list, &initial_process->elem);
+}
 /* Starts a new thread running a user program loaded from
    FILENAME.  The new thread may be scheduled (and may even exit)
    before process_execute() returns.  Returns the new process's
@@ -41,8 +49,13 @@ process_execute (const char *file_name)
 {
   char *fn_copy;
   tid_t tid;
-  sema_init(&sema_pexec, 0);
-  sema_init(&sema_pexit, 0);
+
+  //(0406 new)
+  struct process *curr_p;
+  curr_p = find_process(thread_current()->tid);
+  sema_init(&curr_p->sema_pexec, 0);
+  sema_init(&curr_p->sema_pwait, 0);
+  
 
   /* Make a copy of FILE_NAME.
      Otherwise there's a race between the caller and load(). */
@@ -58,17 +71,31 @@ process_execute (const char *file_name)
   /* Create a new thread to execute FILE_NAME. */
   tid = thread_create (t_name, PRI_DEFAULT, start_process, fn_copy);
 
+  //printf("!!!execute!!! tid = %d, child_pid = %d\n", thread_current()->tid, tid);
 
-  if (tid == TID_ERROR)
+  if (tid == TID_ERROR){
     palloc_free_page (fn_copy); 
-  //printf("!!!execute!!!\n");
-  
-  sema_down(&sema_pexec);
-  if (!exec_success)
-    tid = -1;
-  //printf("!!!sema_pexec up !!!\n");
+  }
 
-  return tid;
+  
+  else {
+    struct process *child;
+    child = malloc(sizeof *child);
+    child->pid = tid;
+    child->parent_pid = thread_current()->tid;
+    list_push_back(&process_list, &child->elem);
+
+    sema_down(&curr_p->sema_pexec);
+
+    if(!child->load_success){
+      list_remove(&child->elem);
+      tid = -1;
+    }
+    else{
+      curr_p->child_pid = tid;
+    }
+  }
+  return tid;   
 }
 
 /* A thread function that loads a user process and makes it start
@@ -89,19 +116,25 @@ start_process (void *f_name)
   if_.gs = if_.fs = if_.es = if_.ds = if_.ss = SEL_UDSEG;
   if_.cs = SEL_UCSEG;
   if_.eflags = FLAG_IF | FLAG_MBS;
+  //printf("%s\n", token);
   success = load (token, &if_.eip, &if_.esp);
   //printf("!!!start_process!!!\n");
 
+  struct process *curr_p;
+  curr_p = find_process(thread_current()->tid);
+  curr_p->load_success = success;
+  //printf("!!!start!!! tid = %d, parent_pid = %d\n", thread_current()->tid, curr_p->parent_pid);
 
-  exec_success = success;
+  struct process *parent_p;
+  parent_p = find_process(curr_p->parent_pid);
+  //printf("!!!start!!! tid = %d, parent_pid = %d\n", parent_p->child_pid, parent_p->pid);
 
-  sema_up(&sema_pexec);
-    //printf("!!!after sema_pexec up!!!\n");
+  if(!list_empty(&parent_p -> sema_pexec.waiters))
+    sema_up(&parent_p -> sema_pexec);
 
   if (!success) {
     palloc_free_page (file_name);
     sys_exit (-1);
-
   }
 
   /* Argument Passing */
@@ -167,13 +200,32 @@ start_process (void *f_name)
    This function will be implemented in problem 2-2.  For now, it
    does nothing. */
 int
-process_wait (tid_t child_tid UNUSED) 
+process_wait (tid_t child_tid) 
 {
-  //printf("!!!wait!!!\n");
-  if(!isDead)
-    sema_down(&sema_pexit);  
+  ASSERT(child_tid != -1);
+  struct process *curr_p;
+  struct process *child_p;
+  curr_p = find_process(thread_current()->tid);
+
+  if (find_process(child_tid) == NULL){   //there's no child_tid in process list
+    return -1;
+  }
+
+  if (curr_p->child_pid != find_process(child_tid)->pid){//if child_tid is not a child of current process
+    return -1;
+  }
+  else{   //if child
+    if (find_process(child_tid)->is_dead){    //If it was terminated by the kernel 
+      return -1;
+    }
+    
+    else{   //child but not dead -> wait for it exit
+      sema_down(&curr_p->sema_pwait);  
+      return get_exitstatus(child_tid);
+
+    }
+  }
   
-  return get_exitstatus(child_tid);
 }
 
 /* Free the current process's resources. */
@@ -199,11 +251,21 @@ process_exit (void)
       pagedir_destroy (pd);
     }
     //printf("!!!exit!!!\n");
-  isDead = true;
-  if(!list_empty(&sema_pexit.waiters) )
-    sema_up(&sema_pexit);
+  struct process *curr_p;
+  struct process *parent_p;
+  curr_p = find_process(curr->tid);
+  curr_p -> is_dead = true;
+  parent_p = find_process(curr_p->parent_pid);
 
-
+  if(!list_empty(&parent_p->sema_pwait.waiters) )
+    sema_up(&parent_p->sema_pwait);
+  /*
+  else{
+    if parent_p == NULL or parent_p->is_dead == true{
+      list_remove(curr_p)??? //Do not store the exit code!
+    }
+  }
+  */
 }
 
 /* Sets up the CPU for running user code in the current
@@ -224,14 +286,16 @@ process_activate (void)
 
 void
 set_exitstatus(int status){
-  exit_status = status;
+  struct process *curr_p;
+  curr_p = find_process(thread_current()->tid);
+  curr_p -> exit_status = status;
 }
 
 int
-get_exitstatus(tid_t child_tid UNUSED){
-
-  //return child's exit_status 
-  return exit_status;
+get_exitstatus(tid_t child_tid){
+  struct process *p;
+  p = find_process(child_tid);
+  return p->exit_status;
 }
 
 
@@ -570,8 +634,32 @@ install_page (void *upage, void *kpage, bool writable)
 }
 
 
+struct list_elem *
+find_processelem(tid_t pid){
+  struct list_elem *e;
+  struct process *p;
+  for(e = list_begin(&process_list); e!= list_end(&process_list); e = list_next(e)){
+    p = list_entry(e, struct process, elem);
+    if (p->pid == pid){
+      break;
+    }
+  }
+  return e;
+}
 
-
+struct process *
+find_process(tid_t pid){
+  struct process *p;
+  struct list_elem *e;
+  e = find_processelem(pid);
+  if (e == list_end(&process_list)){    //there's no pid process in process list
+    return NULL;
+  }
+  else{
+    p = list_entry(e, struct process, elem);
+  return p;
+  } 
+}
 
 bool
 is_valid_usraddr (void *addr){

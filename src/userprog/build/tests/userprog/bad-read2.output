@@ -1,6 +1,6 @@
-Copying tests/userprog/bad-read2 into /tmp/mMuqaHYMuS.dsk...
-Writing command line to /tmp/Kq9moXPeaL.dsk...
-qemu -hda /tmp/Kq9moXPeaL.dsk -hdb /tmp/Bllt5DhnIA.dsk -hdc /tmp/mMuqaHYMuS.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/bad-read2 into /tmp/hHEC72vmsC.dsk...
+Writing command line to /tmp/zwhpq5pJ40.dsk...
+qemu -hda /tmp/zwhpq5pJ40.dsk -hdb /tmp/s8zDOz9jKi.dsk -hdc /tmp/hHEC72vmsC.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put bad-read2 run bad-read2
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -22,8 +22,8 @@ Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x80480a6
  esi=00000000 edi=00000000 esp=bfffffa0 ebp=bfffffa8
  cs=001b ds=0023 es=0023 ss=0023
 Execution of 'bad-read2' complete.
-Timer: 65 ticks
-Thread: 0 idle ticks, 62 kernel ticks, 3 user ticks
+Timer: 64 ticks
+Thread: 0 idle ticks, 62 kernel ticks, 2 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 59 reads, 154 writes
 hd1:0: 73 reads, 0 writes
