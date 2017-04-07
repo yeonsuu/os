@@ -55,7 +55,7 @@ process_execute (const char *file_name)
   curr_p = find_process(thread_current()->tid);
   sema_init(&curr_p->sema_pexec, 0);
   sema_init(&curr_p->sema_pwait, 0);
-  
+
 
   /* Make a copy of FILE_NAME.
      Otherwise there's a race between the caller and load(). */
@@ -63,10 +63,18 @@ process_execute (const char *file_name)
   if (fn_copy == NULL)
     return TID_ERROR;
   strlcpy (fn_copy, file_name, PGSIZE);
-  
-  char *s = file_name;
-  char *t_name, *save_ptr;
+  //printf("fn_copy: %s\n", fn_copy);
+  char *s;
+  s = palloc_get_page (0);
+  if (s == NULL)
+    return TID_ERROR;
+  strlcpy (s, file_name, PGSIZE);
+  char *t_name;
+  t_name = malloc(100);
+  char *save_ptr;
+
   t_name = strtok_r (s, " ", &save_ptr);  
+  //printf("t_name: %s\n", t_name);
 
   /* Create a new thread to execute FILE_NAME. */
   tid = thread_create (t_name, PRI_DEFAULT, start_process, fn_copy);
@@ -116,18 +124,18 @@ start_process (void *f_name)
   if_.gs = if_.fs = if_.es = if_.ds = if_.ss = SEL_UDSEG;
   if_.cs = SEL_UCSEG;
   if_.eflags = FLAG_IF | FLAG_MBS;
-  //printf("%s\n", token);
+  ////printf("%s\n", token);
   success = load (token, &if_.eip, &if_.esp);
-  //printf("!!!start_process!!!\n");
+  ////printf("!!!start_process!!!\n");
 
   struct process *curr_p;
   curr_p = find_process(thread_current()->tid);
   curr_p->load_success = success;
-  //printf("!!!start!!! tid = %d, parent_pid = %d\n", thread_current()->tid, curr_p->parent_pid);
+  ////printf("!!!start!!! tid = %d, parent_pid = %d\n", thread_current()->tid, curr_p->parent_pid);
 
   struct process *parent_p;
   parent_p = find_process(curr_p->parent_pid);
-  //printf("!!!start!!! tid = %d, parent_pid = %d\n", parent_p->child_pid, parent_p->pid);
+  ////printf("!!!start!!! tid = %d, parent_pid = %d\n", parent_p->child_pid, parent_p->pid);
 
   if(!list_empty(&parent_p -> sema_pexec.waiters))
     sema_up(&parent_p -> sema_pexec);
@@ -141,6 +149,7 @@ start_process (void *f_name)
   char **argv;
   int argc = 0;
   argv = (char **) malloc(100 * sizeof(char *));
+
 
   //push argv[n][...]
   while(token != NULL){
@@ -250,22 +259,29 @@ process_exit (void)
       pagedir_activate (NULL);
       pagedir_destroy (pd);
     }
-    //printf("!!!exit!!!\n");
+    ////printf("!!!exit!!!\n");
   struct process *curr_p;
   struct process *parent_p;
+  struct process *child_p;
   curr_p = find_process(curr->tid);
   curr_p -> is_dead = true;
   parent_p = find_process(curr_p->parent_pid);
+  child_p = find_process(curr_p->child_pid);
+
 
   if(!list_empty(&parent_p->sema_pwait.waiters) )
     sema_up(&parent_p->sema_pwait);
-  /*
-  else{
-    if parent_p == NULL or parent_p->is_dead == true{
-      list_remove(curr_p)??? //Do not store the exit code!
-    }
+  
+  if ((child_p != NULL) && (child_p->is_dead == true))
+    list_remove(&child_p->elem);
+
+  if (parent_p == NULL){
+    list_remove(&curr_p->elem); //Do not store the exit code!
   }
-  */
+  else if (parent_p->is_dead == true)
+    list_remove(&curr_p->elem);
+
+  
 }
 
 /* Sets up the CPU for running user code in the current
@@ -309,7 +325,7 @@ get_exitstatus(tid_t child_tid){
 typedef uint32_t Elf32_Word, Elf32_Addr, Elf32_Off;
 typedef uint16_t Elf32_Half;
 
-/* For use with ELF types in printf(). */
+/* For use with ELF types in //printf(). */
 #define PE32Wx PRIx32   /* Print Elf32_Word in hexadecimal. */
 #define PE32Ax PRIx32   /* Print Elf32_Addr in hexadecimal. */
 #define PE32Ox PRIx32   /* Print Elf32_Off in hexadecimal. */

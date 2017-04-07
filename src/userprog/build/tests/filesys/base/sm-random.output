@@ -1,6 +1,6 @@
-Copying tests/filesys/base/sm-random into /tmp/oIjmBwgPIX.dsk...
-Writing command line to /tmp/KnjyXJ3HsC.dsk...
-qemu -hda /tmp/KnjyXJ3HsC.dsk -hdb /tmp/e1gM9WXNBP.dsk -hdc /tmp/oIjmBwgPIX.dsk -m 4 -net none -nographic -monitor null
+Copying tests/filesys/base/sm-random into /tmp/qHSL8a5dVM.dsk...
+Writing command line to /tmp/QOYRr2eAYi.dsk...
+qemu -hda /tmp/QOYRr2eAYi.dsk -hdb /tmp/uqZw4KFeei.dsk -hdc /tmp/qHSL8a5dVM.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put sm-random run sm-random
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -20,8 +20,8 @@ Executing 'sm-random':
 (sm-random) write 13 bytes at offset 858 failed: FAILED
 sm-random: exit(1)
 Execution of 'sm-random' complete.
-Timer: 63 ticks
-Thread: 0 idle ticks, 62 kernel ticks, 1 user ticks
+Timer: 62 ticks
+Thread: 0 idle ticks, 61 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 61 reads, 164 writes
 hd1:0: 78 reads, 0 writes

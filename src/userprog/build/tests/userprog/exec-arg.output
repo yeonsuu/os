@@ -1,12 +1,12 @@
-Copying tests/userprog/exec-arg into /tmp/sJ35EBouk4.dsk...
-Copying tests/userprog/child-args into /tmp/sJ35EBouk4.dsk...
-Writing command line to /tmp/zBgth306H7.dsk...
-qemu -hda /tmp/zBgth306H7.dsk -hdb /tmp/LKlTANgUSU.dsk -hdc /tmp/sJ35EBouk4.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/exec-arg into /tmp/7lPjcvMLon.dsk...
+Copying tests/userprog/child-args into /tmp/7lPjcvMLon.dsk...
+Writing command line to /tmp/Pp0YeswxVA.dsk...
+qemu -hda /tmp/Pp0YeswxVA.dsk -hdb /tmp/cCYTXsPHRq.dsk -hdc /tmp/7lPjcvMLon.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put exec-arg put child-args run exec-arg
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
 374 pages available in user pool.
-Calibrating timer...  78,540,800 loops/s.
+Calibrating timer...  52,377,600 loops/s.
 hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 145 sector (72 kB) disk, model "QEMU HARDDISK", serial "QM00003"
@@ -16,23 +16,22 @@ Putting 'exec-arg' into the file system...
 Putting 'child-args' into the file system...
 Executing 'exec-arg':
 (exec-arg) begin
-Page fault at 0x804a572: rights violation error writing page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0106bdc
- cr2=0804a572 error=00000003
- eax=c010e874 ebx=0804a572 ecx=ffffffff edx=00000020
- esi=c010e874 edi=c011cf24 esp=c010e874 ebp=c011cf04
- cs=0008 ds=0010 es=0010 ss=0020
-Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0107256 0xc010a94f 0xc010aa09 0xc0101725 0xc01018fb 0xc0106bdc 0xc01093fc 0xc010acd0 0xc010aaf2 0xc0101725 0xc01018fb 0x8049fe5 0x80480b2 0x80480ef 0x80486c8.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
-Timer: 76 ticks
-Thread: 0 idle ticks, 73 kernel ticks, 3 user ticks
+(args) begin
+(args) argc = 2
+(args) argv[0] = 'child-args'
+(args) argv[1] = 'childarg'
+(args) argv[2] = null
+(args) end
+child-args: exit(0)
+(exec-arg) end
+exec-arg: exit(0)
+Execution of 'exec-arg' complete.
+Timer: 65 ticks
+Thread: 0 idle ticks, 63 kernel ticks, 2 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 86 reads, 300 writes
+hd0:1: 116 reads, 300 writes
 hd1:0: 145 reads, 0 writes
-Console: 1519 characters output
+Console: 989 characters output
 Keyboard: 0 keys pressed
-Exception: 1 page faults
+Exception: 0 page faults
 Powering off...

@@ -6,6 +6,8 @@
 #include "userprog/process.h"
 #include "threads/malloc.h"
 #include "threads/init.h"
+#include "threads/vaddr.h"
+
 
 
 
@@ -172,8 +174,10 @@ int
 sys_exec(const char *cmd_line)
 {
   	  //printf("!!!syscall : exec!!!\n");
-
-  return process_execute(cmd_line);
+  if(pagedir_get_page (thread_current()->pagedir, cmd_line) == NULL)
+    return -1;
+  else
+    return process_execute(cmd_line);
 
 
 }
