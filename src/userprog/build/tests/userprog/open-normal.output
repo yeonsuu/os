@@ -1,7 +1,7 @@
-Copying tests/userprog/open-normal into /tmp/3YPofU2GTX.dsk...
-Copying ../../tests/userprog/sample.txt into /tmp/3YPofU2GTX.dsk...
-Writing command line to /tmp/no9PlIZNoy.dsk...
-qemu -hda /tmp/no9PlIZNoy.dsk -hdb /tmp/ayK43oKKNr.dsk -hdc /tmp/3YPofU2GTX.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/open-normal into /tmp/r9822LtrN0.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/r9822LtrN0.dsk...
+Writing command line to /tmp/wjOZzJRYrv.dsk...
+qemu -hda /tmp/wjOZzJRYrv.dsk -hdb /tmp/XPLorXcEYL.dsk -hdc /tmp/r9822LtrN0.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put open-normal put sample.txt run open-normal
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -19,10 +19,10 @@ Executing 'open-normal':
 (open-normal) end
 open-normal: exit(0)
 Execution of 'open-normal' complete.
-Timer: 60 ticks
-Thread: 0 idle ticks, 59 kernel ticks, 1 user ticks
+Timer: 58 ticks
+Thread: 0 idle ticks, 58 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 86 reads, 160 writes
+hd0:1: 90 reads, 160 writes
 hd1:0: 75 reads, 0 writes
 Console: 870 characters output
 Keyboard: 0 keys pressed

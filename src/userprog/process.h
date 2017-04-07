@@ -6,6 +6,13 @@
 #include <list.h>
 #include "threads/synch.h"
 
+struct fd_file
+{
+	int fd;
+	struct file* file;
+	struct list_elem elem;
+};
+
 struct process
 {
 	tid_t pid;
@@ -17,6 +24,9 @@ struct process
 	struct list_elem elem;
 	bool load_success;
 	bool is_dead;
+	/* Process's file list */
+	struct list file_list;
+	int fd_cnt;
 };
 
 void process_init (void);
@@ -28,5 +38,7 @@ void set_exitstatus(int);
 int get_exitstatus(tid_t);
 struct list_elem * find_processelem(tid_t);
 struct process * find_process(tid_t);
+struct list_elem * find_fileelem(int);
+struct fd_file * find_file(int);
 bool is_valid_usraddr (void *);
 #endif /* userprog/process.h */

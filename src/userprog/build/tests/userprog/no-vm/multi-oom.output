@@ -1,6 +1,6 @@
-Copying tests/userprog/no-vm/multi-oom into /tmp/jYF4EDdP27.dsk...
-Writing command line to /tmp/eUP5NmY5aN.dsk...
-qemu -hda /tmp/eUP5NmY5aN.dsk -hdb /tmp/LVRp3EQ3gX.dsk -hdc /tmp/jYF4EDdP27.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/no-vm/multi-oom into /tmp/1wHrwmaMUg.dsk...
+Writing command line to /tmp/UueDhToA7D.dsk...
+qemu -hda /tmp/UueDhToA7D.dsk -hdb /tmp/NUg2v9cjWR.dsk -hdc /tmp/1wHrwmaMUg.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put multi-oom run multi-oom
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -25,42 +25,45 @@ Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x804817e
  eax=00000002 ebx=c0000000 ecx=a73db9f4 edx=a73db9f2
  esi=bffffff3 edi=0804ac43 esp=bfffff60 ebp=bfffff78
  cs=001b ds=0023 es=0023 ss=0023
-multi-oom: exit(-1)
-multi-oom: exit(-1)
-(multi-oom) wait returned -1.: FAILED
-multi-oom: exit(1)
-Page fault at 0xc0000000: rights violation error reading page in user context.
-multi-oom: dying due to interrupt 0x0e (#PF Page-Fault Exception).
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x804817e
- cr2=c0000000 error=00000005
- eax=00000002 ebx=c0000000 ecx=1285c261 edx=1285c25f
- esi=bffffff3 edi=0804ac43 esp=bfffff60 ebp=bfffff78
- cs=001b ds=0023 es=0023 ss=0023
+(multi-oom) crashed child should return -1.: FAILED
 multi-oom: exit(1)
 multi-oom: exit(1)
 multi-oom: exit(1)
-(multi-oom) wait returned -1.: FAILED
 multi-oom: exit(1)
-Page fault at 0x14: not present error reading page in kernel context.
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(-858993460)
+Page fault at 0x28: not present error reading page in kernel context.
 Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc010734a
- cr2=00000014 error=00000000
- eax=00000010 ebx=00000010 ecx=0000000b edx=c019d20c
- esi=00000000 edi=c019d00c esp=c019e000 ebp=c019cec4
- cs=0008 ds=0010 es=0010 ss=0001
+ cr2=00000028 error=00000000
+ eax=00000024 ebx=00000024 ecx=c01279ec edx=00000000
+ esi=00000000 edi=00000001 esp=00009504 ebp=c014cf20
+ cs=0008 ds=0010 es=0010 ss=0000
 Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0107276 0xc010a9ff 0xc010aab9 0xc0101745 0xc010191b 0xc010734a 0xc0107928 0xc01097f1 0xc0100bc5 0xc010ad6f 0xc010ab79 0xc0101745 0xc010191b 0x804a633Page fault at 0xbfffff58: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0105570
- cr2=bfffff58 error=00000000
- eax=0000000a ebx=bfffff58 ecx=00000784 edx=c019cd30
- esi=c010d564 edi=c010ef79 esp=c010e82f ebp=c019cda8
- cs=0008 ds=0010 es=0010 ss=a633
-Kernel PANIC recursion at ../../userprog/exception.c:100 in kill().
-Timer: 82 ticks
-Thread: 0 idle ticks, 69 kernel ticks, 13 user ticks
+Call stack: 0xc0107276 0xc010aaef 0xc010aba9 0xc0101745 0xc010191b 0xc010734a 0xc0107928 0xc01095c1 0xc0100d3b.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Timer: 97 ticks
+Thread: 0 idle ticks, 58 kernel ticks, 39 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 1185 reads, 178 writes
+hd0:1: 7437 reads, 178 writes
 hd1:0: 85 reads, 0 writes
-Console: 2700 characters output
+Console: 2306 characters output
 Keyboard: 0 keys pressed
-Exception: 4 page faults
+Exception: 2 page faults
 Powering off...

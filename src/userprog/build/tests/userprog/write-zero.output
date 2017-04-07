@@ -1,7 +1,7 @@
-Copying tests/userprog/write-zero into /tmp/JkDC1dmbsu.dsk...
-Copying ../../tests/userprog/sample.txt into /tmp/JkDC1dmbsu.dsk...
-Writing command line to /tmp/SBit1mEq5Z.dsk...
-qemu -hda /tmp/SBit1mEq5Z.dsk -hdb /tmp/tvqcUNUGbn.dsk -hdc /tmp/JkDC1dmbsu.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/write-zero into /tmp/mmxXDq6LpQ.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/mmxXDq6LpQ.dsk...
+Writing command line to /tmp/ZDKX0HANVj.dsk...
+qemu -hda /tmp/ZDKX0HANVj.dsk -hdb /tmp/yqySut7Yrd.dsk -hdc /tmp/mmxXDq6LpQ.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put write-zero put sample.txt run write-zero
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -20,10 +20,10 @@ Executing 'write-zero':
 (write-zero) end
 write-zero: exit(0)
 Execution of 'write-zero' complete.
-Timer: 63 ticks
-Thread: 0 idle ticks, 62 kernel ticks, 1 user ticks
+Timer: 59 ticks
+Thread: 0 idle ticks, 58 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 86 reads, 160 writes
+hd0:1: 90 reads, 160 writes
 hd1:0: 75 reads, 0 writes
 Console: 893 characters output
 Keyboard: 0 keys pressed

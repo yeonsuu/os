@@ -1,6 +1,6 @@
-Copying tests/filesys/base/lg-create into /tmp/GZ8fKqS2T9.dsk...
-Writing command line to /tmp/cjiMTIItYu.dsk...
-qemu -hda /tmp/cjiMTIItYu.dsk -hdb /tmp/QqFrVXkqIJ.dsk -hdc /tmp/GZ8fKqS2T9.dsk -m 4 -net none -nographic -monitor null
+Copying tests/filesys/base/lg-create into /tmp/WPtSAi5Obq.dsk...
+Writing command line to /tmp/RgVF8qO5Cg.dsk...
+qemu -hda /tmp/RgVF8qO5Cg.dsk -hdb /tmp/7HdzvEWQsK.dsk -hdc /tmp/WPtSAi5Obq.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put lg-create run lg-create
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -16,16 +16,23 @@ Executing 'lg-create':
 (lg-create) begin
 (lg-create) create "blargle"
 (lg-create) open "blargle" for verification
-(lg-create) size of blargle (134522600) differs from expected (75678)
-(lg-create) read of 512 bytes at offset 0 in "blargle" returned 134522600: FAILED
-lg-create: exit(1)
-Execution of 'lg-create' complete.
-Timer: 65 ticks
-Thread: 0 idle ticks, 63 kernel ticks, 2 user ticks
+Page fault at 0x23: not present error reading page in kernel context.
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc010c897
+ cr2=00000023 error=00000000
+ eax=00000007 ebx=bffffd10 ecx=c0120ffc edx=c011df2c
+ esi=c011dfb0 edi=0001279e esp=c011df24 ebp=c011df04
+ cs=0008 ds=0010 es=0010 ss=bc4e
+Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
+Call stack: 0xc0107276 0xc010aaef 0xc010aba9 0xc0101745 0xc010191b 0xc010c897 0xc010bc4e 0xc010b014 0xc010ad6a 0xc0101745 0xc010191b 0x804a1c9 0x804840a 0x804854a 0x8048102 0x8048827 0x8048854.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Timer: 70 ticks
+Thread: 0 idle ticks, 60 kernel ticks, 10 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 59 reads, 160 writes
+hd0:1: 85 reads, 312 writes
 hd1:0: 76 reads, 0 writes
-Console: 1003 characters output
+Console: 1546 characters output
 Keyboard: 0 keys pressed
-Exception: 0 page faults
+Exception: 1 page faults
 Powering off...

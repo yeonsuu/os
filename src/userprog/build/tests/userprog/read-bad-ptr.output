@@ -1,7 +1,7 @@
-Copying tests/userprog/read-bad-ptr into /tmp/2CHUgND385.dsk...
-Copying ../../tests/userprog/sample.txt into /tmp/2CHUgND385.dsk...
-Writing command line to /tmp/1swD6M3WMw.dsk...
-qemu -hda /tmp/1swD6M3WMw.dsk -hdb /tmp/6twim8edjb.dsk -hdc /tmp/2CHUgND385.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/read-bad-ptr into /tmp/FUHPs540CG.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/FUHPs540CG.dsk...
+Writing command line to /tmp/xxUYL4Q9Dr.dsk...
+qemu -hda /tmp/xxUYL4Q9Dr.dsk -hdb /tmp/U6Y0JPYfaM.dsk -hdc /tmp/FUHPs540CG.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put read-bad-ptr put sample.txt run read-bad-ptr
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -17,15 +17,17 @@ Putting 'sample.txt' into the file system...
 Executing 'read-bad-ptr':
 (read-bad-ptr) begin
 (read-bad-ptr) open "sample.txt"
-(read-bad-ptr) should not have survived read(): FAILED
-read-bad-ptr: exit(1)
-Execution of 'read-bad-ptr' complete.
-Timer: 63 ticks
-Thread: 0 idle ticks, 62 kernel ticks, 1 user ticks
+Kernel PANIC at ../../devices/disk.c:436 in select_sector(): assertion `sec_no < d->capacity' failed.
+Call stack: 0xc0107276 0xc0104cee 0xc01046e3 0xc010c5fe 0xc010bade 0xc010b068 0xc010ada8 0xc0101745 0xc010191b 0x804a091 0x80480e7 0x8048127 0x8048700.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Timer: 60 ticks
+Thread: 0 idle ticks, 60 kernel ticks, 0 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 86 reads, 160 writes
+hd0:1: 90 reads, 160 writes
 hd1:0: 75 reads, 0 writes
-Console: 947 characters output
+Console: 1240 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

@@ -1,6 +1,6 @@
-Copying tests/filesys/base/sm-seq-block into /tmp/i5CYQ29CMi.dsk...
-Writing command line to /tmp/Ew7B9dOaOw.dsk...
-qemu -hda /tmp/Ew7B9dOaOw.dsk -hdb /tmp/dyJnJgVLXN.dsk -hdc /tmp/i5CYQ29CMi.dsk -m 4 -net none -nographic -monitor null
+Copying tests/filesys/base/sm-seq-block into /tmp/XOM3P7SD29.dsk...
+Writing command line to /tmp/gZvvGOgVm1.dsk...
+qemu -hda /tmp/gZvvGOgVm1.dsk -hdb /tmp/OTCwePUK6A.dsk -hdc /tmp/XOM3P7SD29.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put sm-seq-block run sm-seq-block
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -20,10 +20,10 @@ Executing 'sm-seq-block':
 (sm-seq-block) write 513 bytes at offset 0 in "noodle" failed: FAILED
 sm-seq-block: exit(1)
 Execution of 'sm-seq-block' complete.
-Timer: 61 ticks
-Thread: 0 idle ticks, 59 kernel ticks, 2 user ticks
+Timer: 59 ticks
+Thread: 0 idle ticks, 57 kernel ticks, 2 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 59 reads, 160 writes
+hd0:1: 85 reads, 176 writes
 hd1:0: 76 reads, 0 writes
 Console: 961 characters output
 Keyboard: 0 keys pressed

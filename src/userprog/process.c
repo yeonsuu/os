@@ -30,7 +30,6 @@ static bool load (const char *cmdline, void (**eip) (void), void **esp);
 
 struct list process_list;
 
-
 void
 process_init (void)
 {
@@ -39,6 +38,8 @@ process_init (void)
   initial_process = malloc(sizeof *initial_process);
   initial_process -> pid = thread_current() -> tid;
   list_push_back(&process_list, &initial_process->elem);
+  list_init(&initial_process -> file_list);
+  initial_process -> fd_cnt = 2;
 }
 /* Starts a new thread running a user program loaded from
    FILENAME.  The new thread may be scheduled (and may even exit)
@@ -91,6 +92,8 @@ process_execute (const char *file_name)
     child = malloc(sizeof *child);
     child->pid = tid;
     child->parent_pid = thread_current()->tid;
+    list_init(&child->file_list);
+    child->fd_cnt = 2;
     list_push_back(&process_list, &child->elem);
 
     sema_down(&curr_p->sema_pexec);
@@ -225,12 +228,19 @@ process_wait (tid_t child_tid)
   }
   else{   //if child
     if (find_process(child_tid)->is_dead){    //If it was terminated by the kernel 
-      return -1;
+      int exit_status = get_exitstatus(child_tid);
+      list_remove(&find_process(child_tid)->elem);
+
+      return exit_status;
     }
     
     else{   //child but not dead -> wait for it exit
-      sema_down(&curr_p->sema_pwait);  
-      return get_exitstatus(child_tid);
+      //if(list_empty(&curr_p->sema_pwait))
+        sema_down(&curr_p->sema_pwait);
+      int exit_status = get_exitstatus(child_tid);
+
+      list_remove(&find_process(child_tid)->elem);
+      return exit_status;
 
     }
   }
@@ -677,6 +687,32 @@ find_process(tid_t pid){
   } 
 }
 
+struct list_elem *
+find_fileelem(int fd){
+  struct process * p;
+  p = find_process(thread_current()->tid);
+  struct fd_file *fd_file;
+  struct list_elem *e;
+  for(e = list_begin(&p->file_list); e!= list_end(&p->file_list); e = list_next(e)){
+    fd_file = list_entry(e, struct fd_file, elem);
+    if (fd_file->fd == fd){
+      break;
+    }
+  }
+  return e;
+}
+
+struct fd_file *
+find_file(int fd){
+  struct fd_file *fd_file;
+  struct list_elem *e;
+  e = find_fileelem(fd);
+  if ( e == list_end(&find_process(thread_current()->tid)->file_list)){
+    return NULL;    //no fd there
+  }else
+    fd_file = list_entry(e, struct fd_file, elem);
+  return fd_file;
+}
 bool
 is_valid_usraddr (void *addr){
   struct thread *t = thread_current();

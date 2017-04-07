@@ -7,6 +7,10 @@
 #include "threads/malloc.h"
 #include "threads/init.h"
 #include "threads/vaddr.h"
+#include "filesys/filesys.h"
+#include "userprog/pagedir.h"
+#include "filesys/file.h"
+#include "devices/input.h"
 
 
 
@@ -73,7 +77,7 @@ syscall_handler (struct intr_frame *f)
 
   case SYS_CREATE :
     syscall_arguments(argv, sp, 2);               
-  	//sys_create(argv[0], argv[1]);
+  	f -> eax = sys_create((char *)*(uint32_t *)argv[0], (unsigned)*argv[1]);
   	break;
 
   case SYS_REMOVE :   
@@ -83,17 +87,17 @@ syscall_handler (struct intr_frame *f)
 
   case SYS_OPEN :  
     syscall_arguments(argv, sp, 1);
-  	//sys_open(argv[0]);
+  	f->eax = sys_open((char *)*(uint32_t *)argv[0]);
   	break;
 
   case SYS_FILESIZE :
     syscall_arguments(argv, sp, 1);
-  	//sys_filesize(argv[0]);
+  	f->eax = sys_filesize((int)*argv[0]);
   	break;
 
   case SYS_READ :   
     syscall_arguments(argv, sp, 3);
-  	//sys_read(argv[0], argv[1], argv[2]);
+  	f->eax = sys_read((int)*argv[0], (const void *)*(uint32_t *)argv[1], (unsigned) * argv[2]);
   	break;
 
   case SYS_WRITE : 
@@ -174,7 +178,7 @@ int
 sys_exec(const char *cmd_line)
 {
   	  //printf("!!!syscall : exec!!!\n");
-  if(pagedir_get_page (thread_current()->pagedir, cmd_line) == NULL)
+  if(!is_valid_usraddr((void *)cmd_line))
     return -1;
   else
     return process_execute(cmd_line);
@@ -191,38 +195,92 @@ sys_wait(tid_t pid)
 }
 
 /*
-void
-sys_create(args[0], args[1])
+Creates a new file called file, initially initial_size bytes in size
+RETURN successful -> true / else -> false
+ONLY CREATE. OPENING NEW FILE -> SYS_OPEN
+*/
+
+bool
+sys_create(const char *file, unsigned initial_size)
 {
-  eax;
+  if(file == NULL)
+    sys_exit(-1);
+  if(!is_valid_usraddr((void *)file))
+      sys_exit(-1);  
+  return filesys_create(file, initial_size);
 }
+/*
 void
 sys_remove(args[0])
 {
   eax;
 }
-void
-sys_open(args[0])
-{
-  eax;
-}
-void
-sys_filesize(args[0])
-{
-  eax;
-}
-void
-sys_read(args[0], args[1], args[2])
-{
-  eax;
-}
 */
+int
+sys_open(const char *file)
+{
+  struct fd_file fd_and_flie;
+  int fd;
+  struct file * f;
+  struct process * p;
+  p = find_process(thread_current()->tid);
+
+  if(file == NULL)
+    sys_exit(-1);
+  if(!is_valid_usraddr(file))
+    sys_exit(-1);
+
+  f = filesys_open (file);
+
+  if(f == NULL){
+    fd = -1;
+  }
+  else{
+    fd = p->fd_cnt;
+    p->fd_cnt++;
+
+    fd_and_flie.fd = fd;
+    fd_and_flie.file = f;
+
+    
+    list_push_back(&p->file_list, &fd_and_flie.elem);
+  }
+  return fd;
+}
+
+int
+sys_filesize(int fd)
+{
+  struct file *f = find_file(fd)->file;
+  ASSERT(f!=NULL);
+  return file_length (f);
+}
+
+
+int
+sys_read(int fd, const void *buffer, unsigned size)
+{
+  struct file * f;
+  off_t result;
+  f = find_file(fd);
+  if (f == NULL){
+    sys_exit(-1);
+  }
+  if(fd == 0){
+    input_getc();
+    return 0;
+  }  
+  else{
+    result = file_read(f, buffer, size);
+    return result;
+  }
+}
+
+
 /* return the number of bytes actually written*/
 int
 sys_write(int fd, const void *buffer, unsigned size)
 {
-  	  ///printf("!!!syscall : write!!!\n");
-
   int bytes = 0;
   if (fd == 1){
     putbuf (buffer, size);
@@ -230,20 +288,41 @@ sys_write(int fd, const void *buffer, unsigned size)
   }
   return bytes;
 }
-/*
+
 void
-sys_seek(args[0], args[1])
+sys_seek(int fd, unsigned position)
 {
-  eax;
+  struct file * f;
+  f = find_file(fd)->file;
+  if (f == NULL){
+    sys_exit(-1);
+  }
+  file_seek(f, (off_t)position);
 }
+
+/*
 void
 sys_tell(args[0])
 {
   eax;
 }
-void
-sys_close(args[0])
-{
-}
 */
+void
+sys_close(int fd)
+{
+  if (fd == 0)
+    sys_exit(-1);
+  if (fd == 1)
+    sys_exit(-1);
+  struct file *f = find_file(fd)->file;
+  
+  if (f == NULL)
+    sys_exit(-1);
+
+  else{
+    file_close (f);
+    list_remove(&find_file(fd)->elem);
+
+  }
+}
 

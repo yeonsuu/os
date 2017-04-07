@@ -1,12 +1,12 @@
-Copying tests/userprog/read-normal into /tmp/dYSQ2JlrBO.dsk...
-Copying ../../tests/userprog/sample.txt into /tmp/dYSQ2JlrBO.dsk...
-Writing command line to /tmp/i2ky1ph0AQ.dsk...
-qemu -hda /tmp/i2ky1ph0AQ.dsk -hdb /tmp/4XdV7xqtGy.dsk -hdc /tmp/dYSQ2JlrBO.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/read-normal into /tmp/CQHdxWN0sa.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/CQHdxWN0sa.dsk...
+Writing command line to /tmp/M2YAHFryWR.dsk...
+qemu -hda /tmp/M2YAHFryWR.dsk -hdb /tmp/9fpMniDPUH.dsk -hdc /tmp/CQHdxWN0sa.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put read-normal put sample.txt run read-normal
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
 374 pages available in user pool.
-Calibrating timer...  78,438,400 loops/s.
+Calibrating timer...  78,540,800 loops/s.
 hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 76 sector (38 kB) disk, model "QEMU HARDDISK", serial "QM00003"
@@ -17,16 +17,23 @@ Putting 'sample.txt' into the file system...
 Executing 'read-normal':
 (read-normal) begin
 (read-normal) open "sample.txt" for verification
-(read-normal) size of sample.txt (134522216) differs from expected (239)
-(read-normal) read of 239 bytes at offset 0 in "sample.txt" returned 134522216: FAILED
-read-normal: exit(1)
-Execution of 'read-normal' complete.
-Timer: 66 ticks
-Thread: 0 idle ticks, 64 kernel ticks, 2 user ticks
+Page fault at 0x23: not present error reading page in kernel context.
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc010c8b7
+ cr2=00000023 error=00000000
+ eax=00000007 ebx=bffffd20 ecx=c0120ffc edx=c011df2c
+ esi=c011dfb0 edi=0804a51c esp=c011df24 ebp=c011df04
+ cs=0008 ds=0010 es=0010 ss=bc6e
+Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
+Call stack: 0xc0107276 0xc010aaef 0xc010aba9 0xc0101745 0xc010191b 0xc010c8b7 0xc010bc6e 0xc010b014 0xc010ad6a 0xc0101745 0xc010191b 0x8049fe9 0x804840d 0x80484eb 0x80480c2 0x80480f7 0x8048668.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Timer: 61 ticks
+Thread: 0 idle ticks, 59 kernel ticks, 2 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 92 reads, 162 writes
+hd0:1: 95 reads, 162 writes
 hd1:0: 76 reads, 0 writes
-Console: 1061 characters output
+Console: 1591 characters output
 Keyboard: 0 keys pressed
-Exception: 0 page faults
+Exception: 1 page faults
 Powering off...

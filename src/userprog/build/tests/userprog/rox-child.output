@@ -1,7 +1,7 @@
-Copying tests/userprog/rox-child into /tmp/byH0bEme3V.dsk...
-Copying tests/userprog/child-rox into /tmp/byH0bEme3V.dsk...
-Writing command line to /tmp/0o4P6eZKNA.dsk...
-qemu -hda /tmp/0o4P6eZKNA.dsk -hdb /tmp/fHnBJmLxd0.dsk -hdc /tmp/byH0bEme3V.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/rox-child into /tmp/pTQMxvYn1n.dsk...
+Copying tests/userprog/child-rox into /tmp/pTQMxvYn1n.dsk...
+Writing command line to /tmp/9JhrF3jV6L.dsk...
+qemu -hda /tmp/9JhrF3jV6L.dsk -hdb /tmp/OEdjTEiCg0.dsk -hdc /tmp/pTQMxvYn1n.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put rox-child put child-rox run rox-child
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -18,15 +18,17 @@ Executing 'rox-child':
 (rox-child) begin
 (rox-child) open "child-rox"
 (rox-child) read "child-rox"
-(rox-child) read "child-rox": FAILED
-rox-child: exit(1)
-Execution of 'rox-child' complete.
+Kernel PANIC at ../../devices/disk.c:436 in select_sector(): assertion `sec_no < d->capacity' failed.
+Call stack: 0xc0107276 0xc0104cee 0xc01046e3 0xc010c5fe 0xc010bade 0xc010b068 0xc010ada8 0xc0101745 0xc010191b 0x804a1a1 0x80480fc 0x8048233 0x804880c.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
 Timer: 67 ticks
 Thread: 0 idle ticks, 66 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 86 reads, 322 writes
+hd0:1: 90 reads, 322 writes
 hd1:0: 156 reads, 0 writes
-Console: 933 characters output
+Console: 1250 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

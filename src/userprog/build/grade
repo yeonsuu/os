@@ -1,0 +1,1560 @@
+TOTAL TESTING SCORE: 48.5%
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+SUMMARY BY TEST SET
+
+Test Set                                      Pts Max  % Ttl  % Max
+--------------------------------------------- --- --- ------ ------
+tests/userprog/Rubric.functionality            90/108  29.2%/ 35.0%
+tests/userprog/Rubric.robustness               68/ 88  19.3%/ 25.0%
+tests/userprog/no-vm/Rubric                     0/  1   0.0%/ 10.0%
+tests/filesys/base/Rubric                       0/ 30   0.0%/ 30.0%
+--------------------------------------------- --- --- ------ ------
+Total                                                  48.5%/100.0%
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+SUMMARY OF INDIVIDUAL TESTS
+
+Functionality of system calls (tests/userprog/Rubric.functionality):
+	- Test argument passing on Pintos command line.
+	     3/ 3 tests/userprog/args-none
+	     3/ 3 tests/userprog/args-single
+	     3/ 3 tests/userprog/args-multiple
+	     3/ 3 tests/userprog/args-many
+	     3/ 3 tests/userprog/args-dbl-space
+
+	- Test "create" system call.
+	     3/ 3 tests/userprog/create-empty
+	     3/ 3 tests/userprog/create-long
+	     3/ 3 tests/userprog/create-normal
+	     3/ 3 tests/userprog/create-exists
+
+	- Test "open" system call.
+	     3/ 3 tests/userprog/open-missing
+	     3/ 3 tests/userprog/open-normal
+	     3/ 3 tests/userprog/open-twice
+
+	- Test "read" system call.
+	  ** 0/ 3 tests/userprog/read-normal
+	  ** 0/ 3 tests/userprog/read-zero
+
+	- Test "write" system call.
+	  ** 0/ 3 tests/userprog/write-normal
+	     3/ 3 tests/userprog/write-zero
+
+	- Test "close" system call.
+	     3/ 3 tests/userprog/close-normal
+
+	- Test "exec" system call.
+	     5/ 5 tests/userprog/exec-once
+	     5/ 5 tests/userprog/exec-multiple
+	     5/ 5 tests/userprog/exec-arg
+
+	- Test "wait" system call.
+	     5/ 5 tests/userprog/wait-simple
+	     5/ 5 tests/userprog/wait-twice
+
+	- Test "exit" system call.
+	     5/ 5 tests/userprog/exit
+
+	- Test "halt" system call.
+	     3/ 3 tests/userprog/halt
+
+	- Test recursive execution of user programs.
+	    15/15 tests/userprog/multi-recurse
+
+	- Test read-only executable feature.
+	  ** 0/ 3 tests/userprog/rox-simple
+	  ** 0/ 3 tests/userprog/rox-child
+	  ** 0/ 3 tests/userprog/rox-multichild
+
+	- Section summary.
+	     22/ 28 tests passed
+	     90/108 points subtotal
+
+Robustness of system calls (tests/userprog/Rubric.robustness):
+	- Test robustness of file descriptor handling.
+	     2/ 2 tests/userprog/close-stdin
+	     2/ 2 tests/userprog/close-stdout
+	     2/ 2 tests/userprog/close-bad-fd
+	     2/ 2 tests/userprog/close-twice
+	     2/ 2 tests/userprog/read-bad-fd
+	     2/ 2 tests/userprog/read-stdout
+	     2/ 2 tests/userprog/write-bad-fd
+	     2/ 2 tests/userprog/write-stdin
+	  ** 0/ 2 tests/userprog/multi-child-fd
+
+	- Test robustness of pointer handling.
+	     3/ 3 tests/userprog/create-bad-ptr
+	     3/ 3 tests/userprog/exec-bad-ptr
+	     3/ 3 tests/userprog/open-bad-ptr
+	  ** 0/ 3 tests/userprog/read-bad-ptr
+	  ** 0/ 3 tests/userprog/write-bad-ptr
+
+	- Test robustness of buffer copying across page boundaries.
+	     3/ 3 tests/userprog/create-bound
+	     3/ 3 tests/userprog/open-boundary
+	  ** 0/ 3 tests/userprog/read-boundary
+	  ** 0/ 3 tests/userprog/write-boundary
+
+	- Test handling of null pointer and empty strings.
+	     2/ 2 tests/userprog/create-null
+	     2/ 2 tests/userprog/open-null
+	     2/ 2 tests/userprog/open-empty
+
+	- Test robustness of system call implementation.
+	     3/ 3 tests/userprog/sc-bad-arg
+	     3/ 3 tests/userprog/sc-bad-sp
+	     5/ 5 tests/userprog/sc-boundary
+	     5/ 5 tests/userprog/sc-boundary-2
+
+	- Test robustness of "exec" and "wait" system calls.
+	     5/ 5 tests/userprog/exec-missing
+	     5/ 5 tests/userprog/wait-bad-pid
+	     5/ 5 tests/userprog/wait-killed
+
+	- Test robustness of exception handling.
+	  ** 0/ 1 tests/userprog/bad-read
+	  ** 0/ 1 tests/userprog/bad-write
+	  ** 0/ 1 tests/userprog/bad-jump
+	  ** 0/ 1 tests/userprog/bad-read2
+	  ** 0/ 1 tests/userprog/bad-write2
+	  ** 0/ 1 tests/userprog/bad-jump2
+
+	- Section summary.
+	     23/ 34 tests passed
+	     68/ 88 points subtotal
+
+Functionality of features that VM might break (tests/userprog/no-vm/Rubric):
+
+	  ** 0/ 1 tests/userprog/no-vm/multi-oom
+
+	- Section summary.
+	      0/  1 tests passed
+	      0/  1 points subtotal
+
+Functionality of base file system (tests/filesys/base/Rubric):
+	- Test basic support for small files.
+	  ** 0/ 1 tests/filesys/base/sm-create
+	  ** 0/ 2 tests/filesys/base/sm-full
+	  ** 0/ 2 tests/filesys/base/sm-random
+	  ** 0/ 2 tests/filesys/base/sm-seq-block
+	  ** 0/ 3 tests/filesys/base/sm-seq-random
+
+	- Test basic support for large files.
+	  ** 0/ 1 tests/filesys/base/lg-create
+	  ** 0/ 2 tests/filesys/base/lg-full
+	  ** 0/ 2 tests/filesys/base/lg-random
+	  ** 0/ 2 tests/filesys/base/lg-seq-block
+	  ** 0/ 3 tests/filesys/base/lg-seq-random
+
+	- Test synchronized multiprogram access to files.
+	  ** 0/ 4 tests/filesys/base/syn-read
+	  ** 0/ 4 tests/filesys/base/syn-write
+	  ** 0/ 2 tests/filesys/base/syn-remove
+
+	- Section summary.
+	      0/ 13 tests passed
+	      0/ 30 points subtotal
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/userprog/read-normal FAILURE:
+
+run: read of 239 bytes at offset 0 in "sample.txt" returned 2: FAILED
+
+OUTPUT FROM tests/userprog/read-normal:
+
+Copying tests/userprog/read-normal into /tmp/HEuAIKtkmU.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/HEuAIKtkmU.dsk...
+Writing command line to /tmp/2NTTHtLNUM.dsk...
+qemu -hda /tmp/2NTTHtLNUM.dsk -hdb /tmp/OLUBsfRYzE.dsk -hdc /tmp/HEuAIKtkmU.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put read-normal put sample.txt run read-normal
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 76 sector (38 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'read-normal' into the file system...
+Putting 'sample.txt' into the file system...
+Executing 'read-normal':
+(read-normal) begin
+(read-normal) open "sample.txt" for verification
+(read-normal) size of sample.txt (2) differs from expected (239)
+(read-normal) read of 239 bytes at offset 0 in "sample.txt" returned 2: FAILED
+read-normal: exit(1)
+Execution of 'read-normal' complete.
+Timer: 60 ticks
+Thread: 0 idle ticks, 60 kernel ticks, 1 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 96 reads, 162 writes
+hd1:0: 76 reads, 0 writes
+Console: 1045 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/userprog/read-zero FAILURE:
+
+run: read() returned 2 instead of 0: FAILED
+
+OUTPUT FROM tests/userprog/read-zero:
+
+Copying tests/userprog/read-zero into /tmp/Kh8xkjiNw5.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/Kh8xkjiNw5.dsk...
+Writing command line to /tmp/J2GiGdMJYT.dsk...
+qemu -hda /tmp/J2GiGdMJYT.dsk -hdb /tmp/BvHd3I2dPt.dsk -hdc /tmp/Kh8xkjiNw5.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put read-zero put sample.txt run read-zero
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 75 sector (37 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'read-zero' into the file system...
+Putting 'sample.txt' into the file system...
+Executing 'read-zero':
+(read-zero) begin
+(read-zero) open "sample.txt"
+(read-zero) read() returned 2 instead of 0: FAILED
+read-zero: exit(1)
+Execution of 'read-zero' complete.
+Timer: 61 ticks
+Thread: 0 idle ticks, 61 kernel ticks, 1 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 90 reads, 160 writes
+hd1:0: 75 reads, 0 writes
+Console: 919 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/userprog/write-normal FAILURE:
+
+run: write() returned 0 instead of 239: FAILED
+
+OUTPUT FROM tests/userprog/write-normal:
+
+Copying tests/userprog/write-normal into /tmp/dHSB2GiLKc.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/dHSB2GiLKc.dsk...
+Writing command line to /tmp/48olk2TDT9.dsk...
+qemu -hda /tmp/48olk2TDT9.dsk -hdb /tmp/juHDX8kNJZ.dsk -hdc /tmp/dHSB2GiLKc.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put write-normal put sample.txt run write-normal
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 76 sector (38 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'write-normal' into the file system...
+Putting 'sample.txt' into the file system...
+Executing 'write-normal':
+(write-normal) begin
+(write-normal) create "test.txt"
+(write-normal) open "test.txt"
+(write-normal) write() returned 0 instead of 239: FAILED
+write-normal: exit(1)
+Execution of 'write-normal' complete.
+Timer: 65 ticks
+Thread: 0 idle ticks, 64 kernel ticks, 1 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 120 reads, 167 writes
+hd1:0: 76 reads, 0 writes
+Console: 981 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/userprog/rox-simple FAILURE:
+
+run: read "rox-simple": FAILED
+
+OUTPUT FROM tests/userprog/rox-simple:
+
+Copying tests/userprog/rox-simple into /tmp/4IW598Dk4O.dsk...
+Writing command line to /tmp/rzX1J7LWS1.dsk...
+qemu -hda /tmp/rzX1J7LWS1.dsk -hdb /tmp/qwywjbGFYB.dsk -hdc /tmp/4IW598Dk4O.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put rox-simple run rox-simple
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 73 sector (36 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'rox-simple' into the file system...
+Executing 'rox-simple':
+(rox-simple) begin
+(rox-simple) open "rox-simple"
+(rox-simple) read "rox-simple"
+(rox-simple) read "rox-simple": FAILED
+rox-simple: exit(1)
+Execution of 'rox-simple' complete.
+Timer: 60 ticks
+Thread: 0 idle ticks, 58 kernel ticks, 2 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 62 reads, 154 writes
+hd1:0: 73 reads, 0 writes
+Console: 886 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/userprog/rox-child FAILURE:
+
+run: read "child-rox": FAILED
+
+OUTPUT FROM tests/userprog/rox-child:
+
+Copying tests/userprog/rox-child into /tmp/mZInbxP8hT.dsk...
+Copying tests/userprog/child-rox into /tmp/mZInbxP8hT.dsk...
+Writing command line to /tmp/9QPwR6leUo.dsk...
+qemu -hda /tmp/9QPwR6leUo.dsk -hdb /tmp/RKpx18MYp5.dsk -hdc /tmp/mZInbxP8hT.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put rox-child put child-rox run rox-child
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 156 sector (78 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'rox-child' into the file system...
+Putting 'child-rox' into the file system...
+Executing 'rox-child':
+(rox-child) begin
+(rox-child) open "child-rox"
+(rox-child) read "child-rox"
+(rox-child) read "child-rox": FAILED
+rox-child: exit(1)
+Execution of 'rox-child' complete.
+Timer: 68 ticks
+Thread: 0 idle ticks, 67 kernel ticks, 1 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 90 reads, 322 writes
+hd1:0: 156 reads, 0 writes
+Console: 933 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/userprog/rox-multichild FAILURE:
+
+run: read "child-rox": FAILED
+
+OUTPUT FROM tests/userprog/rox-multichild:
+
+Copying tests/userprog/rox-multichild into /tmp/NOIH3lTdWU.dsk...
+Copying tests/userprog/child-rox into /tmp/NOIH3lTdWU.dsk...
+Writing command line to /tmp/VLPGfxLOYo.dsk...
+qemu -hda /tmp/VLPGfxLOYo.dsk -hdb /tmp/EhSiOpIi8q.dsk -hdc /tmp/NOIH3lTdWU.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put rox-multichild put child-rox run rox-multichild
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 156 sector (78 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'rox-multichild' into the file system...
+Putting 'child-rox' into the file system...
+Executing 'rox-multichild':
+(rox-multichild) begin
+(rox-multichild) open "child-rox"
+(rox-multichild) read "child-rox"
+(rox-multichild) read "child-rox": FAILED
+rox-multichild: exit(1)
+Execution of 'rox-multichild' complete.
+Timer: 64 ticks
+Thread: 0 idle ticks, 63 kernel ticks, 1 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 90 reads, 322 writes
+hd1:0: 156 reads, 0 writes
+Console: 983 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/userprog/multi-child-fd FAILURE:
+
+run: read of 239 bytes at offset 0 in "sample.txt" returned 2: FAILED
+
+OUTPUT FROM tests/userprog/multi-child-fd:
+
+Copying tests/userprog/multi-child-fd into /tmp/tHgWe4vZ33.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/tHgWe4vZ33.dsk...
+Copying tests/userprog/child-close into /tmp/tHgWe4vZ33.dsk...
+Writing command line to /tmp/f0PPWgudEQ.dsk...
+qemu -hda /tmp/f0PPWgudEQ.dsk -hdb /tmp/v16Q6TWoZo.dsk -hdc /tmp/tHgWe4vZ33.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put multi-child-fd put sample.txt put child-close run multi-child-fd
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 156 sector (78 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'multi-child-fd' into the file system...
+Putting 'sample.txt' into the file system...
+Putting 'child-close' into the file system...
+Executing 'multi-child-fd':
+(multi-child-fd) begin
+(multi-child-fd) open "sample.txt"
+(child-close) begin
+(child-close) end
+child-close: exit(0)
+(multi-child-fd) wait(exec()) = 0
+(multi-child-fd) size of sample.txt (2) differs from expected (239)
+(multi-child-fd) read of 239 bytes at offset 0 in "sample.txt" returned 2: FAILED
+multi-child-fd: exit(1)
+Execution of 'multi-child-fd' complete.
+Timer: 70 ticks
+Thread: 0 idle ticks, 67 kernel ticks, 3 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 166 reads, 324 writes
+hd1:0: 156 reads, 0 writes
+Console: 1216 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/userprog/read-bad-ptr FAILURE:
+
+run: should not have survived read(): FAILED
+
+OUTPUT FROM tests/userprog/read-bad-ptr:
+
+Copying tests/userprog/read-bad-ptr into /tmp/HWmbu5K338.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/HWmbu5K338.dsk...
+Writing command line to /tmp/cZSh5xGjXo.dsk...
+qemu -hda /tmp/cZSh5xGjXo.dsk -hdb /tmp/rD4JRKNJou.dsk -hdc /tmp/HWmbu5K338.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put read-bad-ptr put sample.txt run read-bad-ptr
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 75 sector (37 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'read-bad-ptr' into the file system...
+Putting 'sample.txt' into the file system...
+Executing 'read-bad-ptr':
+(read-bad-ptr) begin
+(read-bad-ptr) open "sample.txt"
+(read-bad-ptr) should not have survived read(): FAILED
+read-bad-ptr: exit(1)
+Execution of 'read-bad-ptr' complete.
+Timer: 63 ticks
+Thread: 0 idle ticks, 62 kernel ticks, 1 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 90 reads, 160 writes
+hd1:0: 75 reads, 0 writes
+Console: 947 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/userprog/write-bad-ptr FAILURE:
+
+run: should have exited with -1: FAILED
+
+OUTPUT FROM tests/userprog/write-bad-ptr:
+
+Copying tests/userprog/write-bad-ptr into /tmp/UFEDU4Yy4q.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/UFEDU4Yy4q.dsk...
+Writing command line to /tmp/47MAFImvIj.dsk...
+qemu -hda /tmp/47MAFImvIj.dsk -hdb /tmp/P3ekITtY9o.dsk -hdc /tmp/UFEDU4Yy4q.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put write-bad-ptr put sample.txt run write-bad-ptr
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 75 sector (37 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'write-bad-ptr' into the file system...
+Putting 'sample.txt' into the file system...
+Executing 'write-bad-ptr':
+(write-bad-ptr) begin
+(write-bad-ptr) open "sample.txt"
+(write-bad-ptr) should have exited with -1: FAILED
+write-bad-ptr: exit(1)
+Execution of 'write-bad-ptr' complete.
+Timer: 62 ticks
+Thread: 0 idle ticks, 61 kernel ticks, 1 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 90 reads, 160 writes
+hd1:0: 75 reads, 0 writes
+Console: 951 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/userprog/read-boundary FAILURE:
+
+run: read() returned 2 instead of 239: FAILED
+
+OUTPUT FROM tests/userprog/read-boundary:
+
+Copying tests/userprog/read-boundary into /tmp/ZsCDFksnko.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/ZsCDFksnko.dsk...
+Writing command line to /tmp/qI1jNSMoFX.dsk...
+qemu -hda /tmp/qI1jNSMoFX.dsk -hdb /tmp/DoS5H2eCCk.dsk -hdc /tmp/ZsCDFksnko.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put read-boundary put sample.txt run read-boundary
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 79 sector (39 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'read-boundary' into the file system...
+Putting 'sample.txt' into the file system...
+Executing 'read-boundary':
+(read-boundary) begin
+(read-boundary) open "sample.txt"
+(read-boundary) read() returned 2 instead of 239: FAILED
+read-boundary: exit(1)
+Execution of 'read-boundary' complete.
+Timer: 63 ticks
+Thread: 0 idle ticks, 62 kernel ticks, 1 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 97 reads, 168 writes
+hd1:0: 79 reads, 0 writes
+Console: 957 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/userprog/write-boundary FAILURE:
+
+run: write() returned 0 instead of 239: FAILED
+
+OUTPUT FROM tests/userprog/write-boundary:
+
+Copying tests/userprog/write-boundary into /tmp/y0WQTKsssv.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/y0WQTKsssv.dsk...
+Writing command line to /tmp/W9YtCVa8EV.dsk...
+qemu -hda /tmp/W9YtCVa8EV.dsk -hdb /tmp/jxntpnW9CU.dsk -hdc /tmp/y0WQTKsssv.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put write-boundary put sample.txt run write-boundary
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 78 sector (39 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'write-boundary' into the file system...
+Putting 'sample.txt' into the file system...
+Executing 'write-boundary':
+(write-boundary) begin
+(write-boundary) open "sample.txt"
+(write-boundary) write() returned 0 instead of 239: FAILED
+write-boundary: exit(1)
+Execution of 'write-boundary' complete.
+Timer: 63 ticks
+Thread: 0 idle ticks, 62 kernel ticks, 1 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 97 reads, 166 writes
+hd1:0: 78 reads, 0 writes
+Console: 967 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/userprog/bad-read FAILURE:
+
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (bad-read) begin
+  bad-read: exit(-1)
+Differences in `diff -u' format:
+  (bad-read) begin
+- bad-read: exit(-1)
+
+(User fault messages are excluded for matching purposes.)
+
+OUTPUT FROM tests/userprog/bad-read:
+
+Copying tests/userprog/bad-read into /tmp/S5BZZ1HxrG.dsk...
+Writing command line to /tmp/GgqIRUb7Kl.dsk...
+qemu -hda /tmp/GgqIRUb7Kl.dsk -hdb /tmp/7rbtumSQDW.dsk -hdc /tmp/S5BZZ1HxrG.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put bad-read run bad-read
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 73 sector (36 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'bad-read' into the file system...
+Executing 'bad-read':
+(bad-read) begin
+Page fault at 0: not present error reading page in user context.
+bad-read: dying due to interrupt 0x0e (#PF Page-Fault Exception).
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x80480a6
+ cr2=00000000 error=00000004
+ eax=00000027 ebx=00000000 ecx=000000ad edx=0000000e
+ esi=00000000 edi=00000000 esp=bfffffa0 ebp=bfffffa8
+ cs=001b ds=0023 es=0023 ss=0023
+Execution of 'bad-read' complete.
+Timer: 61 ticks
+Thread: 0 idle ticks, 59 kernel ticks, 2 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 59 reads, 154 writes
+hd1:0: 73 reads, 0 writes
+Console: 1111 characters output
+Keyboard: 0 keys pressed
+Exception: 1 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/userprog/bad-write FAILURE:
+
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (bad-write) begin
+  bad-write: exit(-1)
+Differences in `diff -u' format:
+  (bad-write) begin
+- bad-write: exit(-1)
+
+(User fault messages are excluded for matching purposes.)
+
+OUTPUT FROM tests/userprog/bad-write:
+
+Copying tests/userprog/bad-write into /tmp/2OQFIVuakI.dsk...
+Writing command line to /tmp/5ZmlM0vsXH.dsk...
+qemu -hda /tmp/5ZmlM0vsXH.dsk -hdb /tmp/OhGyjaiG1H.dsk -hdc /tmp/2OQFIVuakI.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put bad-write run bad-write
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 73 sector (36 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'bad-write' into the file system...
+Executing 'bad-write':
+(bad-write) begin
+Page fault at 0: not present error writing page in user context.
+bad-write: dying due to interrupt 0x0e (#PF Page-Fault Exception).
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x80480a6
+ cr2=00000000 error=00000006
+ eax=00000027 ebx=00000000 ecx=000000ad edx=0000000e
+ esi=00000000 edi=00000000 esp=bfffffa0 ebp=bfffffa8
+ cs=001b ds=0023 es=0023 ss=0023
+Execution of 'bad-write' complete.
+Timer: 59 ticks
+Thread: 0 idle ticks, 57 kernel ticks, 2 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 59 reads, 154 writes
+hd1:0: 73 reads, 0 writes
+Console: 1118 characters output
+Keyboard: 0 keys pressed
+Exception: 1 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/userprog/bad-jump FAILURE:
+
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (bad-jump) begin
+  bad-jump: exit(-1)
+Differences in `diff -u' format:
+  (bad-jump) begin
+- bad-jump: exit(-1)
+
+(User fault messages are excluded for matching purposes.)
+
+OUTPUT FROM tests/userprog/bad-jump:
+
+Copying tests/userprog/bad-jump into /tmp/QNAQ2LgoKI.dsk...
+Writing command line to /tmp/JpyXD98skP.dsk...
+qemu -hda /tmp/JpyXD98skP.dsk -hdb /tmp/wYVMJi6C3T.dsk -hdc /tmp/QNAQ2LgoKI.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put bad-jump run bad-jump
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 73 sector (36 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'bad-jump' into the file system...
+Executing 'bad-jump':
+(bad-jump) begin
+Page fault at 0: not present error reading page in user context.
+bad-jump: dying due to interrupt 0x0e (#PF Page-Fault Exception).
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0
+ cr2=00000000 error=00000004
+ eax=00000000 ebx=00000000 ecx=000000ad edx=0000000e
+ esi=00000000 edi=00000000 esp=bfffff9c ebp=bfffffa8
+ cs=001b ds=0023 es=0023 ss=0023
+Execution of 'bad-jump' complete.
+Timer: 62 ticks
+Thread: 0 idle ticks, 60 kernel ticks, 2 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 59 reads, 154 writes
+hd1:0: 73 reads, 0 writes
+Console: 1103 characters output
+Keyboard: 0 keys pressed
+Exception: 1 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/userprog/bad-read2 FAILURE:
+
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (bad-read2) begin
+  bad-read2: exit(-1)
+Differences in `diff -u' format:
+  (bad-read2) begin
+- bad-read2: exit(-1)
+
+(User fault messages are excluded for matching purposes.)
+
+OUTPUT FROM tests/userprog/bad-read2:
+
+Copying tests/userprog/bad-read2 into /tmp/qpZuyRFvKM.dsk...
+Writing command line to /tmp/BoqpIxqLNR.dsk...
+qemu -hda /tmp/BoqpIxqLNR.dsk -hdb /tmp/JesoaQwURW.dsk -hdc /tmp/qpZuyRFvKM.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put bad-read2 run bad-read2
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 73 sector (36 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'bad-read2' into the file system...
+Executing 'bad-read2':
+(bad-read2) begin
+Page fault at 0xc0000000: rights violation error reading page in user context.
+bad-read2: dying due to interrupt 0x0e (#PF Page-Fault Exception).
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x80480a6
+ cr2=c0000000 error=00000005
+ eax=00000027 ebx=00000000 ecx=000000ad edx=0000000e
+ esi=00000000 edi=00000000 esp=bfffffa0 ebp=bfffffa8
+ cs=001b ds=0023 es=0023 ss=0023
+Execution of 'bad-read2' complete.
+Timer: 61 ticks
+Thread: 0 idle ticks, 59 kernel ticks, 2 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 59 reads, 154 writes
+hd1:0: 73 reads, 0 writes
+Console: 1132 characters output
+Keyboard: 0 keys pressed
+Exception: 1 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/userprog/bad-write2 FAILURE:
+
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (bad-write2) begin
+  bad-write2: exit(-1)
+Differences in `diff -u' format:
+  (bad-write2) begin
+- bad-write2: exit(-1)
+
+(User fault messages are excluded for matching purposes.)
+
+OUTPUT FROM tests/userprog/bad-write2:
+
+Copying tests/userprog/bad-write2 into /tmp/bwvYluX1p7.dsk...
+Writing command line to /tmp/HKAtuM3yvy.dsk...
+qemu -hda /tmp/HKAtuM3yvy.dsk -hdb /tmp/4tS3tRQQec.dsk -hdc /tmp/bwvYluX1p7.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put bad-write2 run bad-write2
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 73 sector (36 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'bad-write2' into the file system...
+Executing 'bad-write2':
+(bad-write2) begin
+Page fault at 0xc0000000: rights violation error writing page in user context.
+bad-write2: dying due to interrupt 0x0e (#PF Page-Fault Exception).
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x80480a6
+ cr2=c0000000 error=00000007
+ eax=00000027 ebx=00000000 ecx=000000ad edx=0000000e
+ esi=00000000 edi=00000000 esp=bfffffa0 ebp=bfffffa8
+ cs=001b ds=0023 es=0023 ss=0023
+Execution of 'bad-write2' complete.
+Timer: 60 ticks
+Thread: 0 idle ticks, 58 kernel ticks, 2 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 59 reads, 154 writes
+hd1:0: 73 reads, 0 writes
+Console: 1139 characters output
+Keyboard: 0 keys pressed
+Exception: 1 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/userprog/bad-jump2 FAILURE:
+
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (bad-jump2) begin
+  bad-jump2: exit(-1)
+Differences in `diff -u' format:
+  (bad-jump2) begin
+- bad-jump2: exit(-1)
+
+(User fault messages are excluded for matching purposes.)
+
+OUTPUT FROM tests/userprog/bad-jump2:
+
+Copying tests/userprog/bad-jump2 into /tmp/rshuy5hgWw.dsk...
+Writing command line to /tmp/fbN9Y2IjXY.dsk...
+qemu -hda /tmp/fbN9Y2IjXY.dsk -hdb /tmp/zjmOzPHGmQ.dsk -hdc /tmp/rshuy5hgWw.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put bad-jump2 run bad-jump2
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 73 sector (36 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'bad-jump2' into the file system...
+Executing 'bad-jump2':
+(bad-jump2) begin
+Page fault at 0xc0000000: rights violation error reading page in user context.
+bad-jump2: dying due to interrupt 0x0e (#PF Page-Fault Exception).
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0000000
+ cr2=c0000000 error=00000005
+ eax=c0000000 ebx=00000000 ecx=000000ad edx=0000000e
+ esi=00000000 edi=00000000 esp=bfffff9c ebp=bfffffa8
+ cs=001b ds=0023 es=0023 ss=0023
+Execution of 'bad-jump2' complete.
+Timer: 62 ticks
+Thread: 0 idle ticks, 60 kernel ticks, 2 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 59 reads, 154 writes
+hd1:0: 73 reads, 0 writes
+Console: 1133 characters output
+Keyboard: 0 keys pressed
+Exception: 1 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/userprog/no-vm/multi-oom FAILURE:
+
+Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
+Call stack: 0xc0107276 0xc010aa4f 0xc010ab09 0xc0101745 0xc010191b 0xc010734a 0xc0107928 0xc01095c1 0xc0100d3b
+Translation of call stack:
+0xc0107276: debug_panic (.../../lib/kernel/debug.c:34)
+0xc010aa4f: kill (.../userprog/exception.c:105)
+0xc010ab09: page_fault (.../userprog/exception.c:160)
+0xc0101745: intr_handler (..../threads/interrupt.c:361)
+0xc010191b: intr_entry (threads/intr-stubs.S:38)
+0xc010734a: list_begin (..../../lib/kernel/list.c:75)
+0xc0107928: list_empty (.../../lib/kernel/list.c:320)
+0xc01095c1: start_process (...../userprog/process.c:143)
+0xc0100d3b: kernel_thread (..../../threads/thread.c:411)
+
+OUTPUT FROM tests/userprog/no-vm/multi-oom:
+
+Copying tests/userprog/no-vm/multi-oom into /tmp/LLSNgKiiu8.dsk...
+Writing command line to /tmp/9uaGR7TSYN.dsk...
+qemu -hda /tmp/9uaGR7TSYN.dsk -hdb /tmp/yNzLM4DmHj.dsk -hdc /tmp/LLSNgKiiu8.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put multi-oom run multi-oom
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 85 sector (42 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'multi-oom' into the file system...
+Executing 'multi-oom':
+(multi-oom) begin
+multi-oom: exit(-1)
+multi-oom: exit(-1)
+multi-oom: exit(-1)
+multi-oom: exit(-1)
+Page fault at 0xc0000000: rights violation error reading page in user context.
+multi-oom: dying due to interrupt 0x0e (#PF Page-Fault Exception).
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x804817e
+ cr2=c0000000 error=00000005
+ eax=00000002 ebx=c0000000 ecx=a73db9f4 edx=a73db9f2
+ esi=bffffff3 edi=0804ac43 esp=bfffff60 ebp=bfffff78
+ cs=001b ds=0023 es=0023 ss=0023
+(multi-oom) crashed child should return -1.: FAILED
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(1)
+multi-oom: exit(-858993460)
+Page fault at 0x28: not present error reading page in kernel context.
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc010734a
+ cr2=00000028 error=00000000
+ eax=00000024 ebx=00000024 ecx=c01279ec edx=00000000
+ esi=00000000 edi=00000001 esp=00009504 ebp=c014cf20
+ cs=0008 ds=0010 es=0010 ss=0000
+Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
+Call stack: 0xc0107276 0xc010aa4f 0xc010ab09 0xc0101745 0xc010191b 0xc010734a 0xc0107928 0xc01095c1 0xc0100d3b.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Timer: 99 ticks
+Thread: 0 idle ticks, 64 kernel ticks, 35 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 7437 reads, 178 writes
+hd1:0: 85 reads, 0 writes
+Console: 2306 characters output
+Keyboard: 0 keys pressed
+Exception: 2 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/base/sm-create FAILURE:
+
+run: read of 512 bytes at offset 0 in "blargle" returned 2: FAILED
+
+OUTPUT FROM tests/filesys/base/sm-create:
+
+Copying tests/filesys/base/sm-create into /tmp/N0l4P6Bxby.dsk...
+Writing command line to /tmp/AAC0xOYViO.dsk...
+qemu -hda /tmp/AAC0xOYViO.dsk -hdb /tmp/MOTDeoEA1k.dsk -hdc /tmp/N0l4P6Bxby.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put sm-create run sm-create
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 76 sector (38 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'sm-create' into the file system...
+Executing 'sm-create':
+(sm-create) begin
+(sm-create) create "blargle"
+(sm-create) open "blargle" for verification
+(sm-create) size of blargle (2) differs from expected (5678)
+(sm-create) read of 512 bytes at offset 0 in "blargle" returned 2: FAILED
+sm-create: exit(1)
+Execution of 'sm-create' complete.
+Timer: 61 ticks
+Thread: 0 idle ticks, 58 kernel ticks, 3 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 85 reads, 176 writes
+hd1:0: 76 reads, 0 writes
+Console: 986 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/base/sm-full FAILURE:
+
+run: write 5678 bytes at offset 0 in "quux" failed: FAILED
+
+OUTPUT FROM tests/filesys/base/sm-full:
+
+Copying tests/filesys/base/sm-full into /tmp/8fU9gZ3Zf6.dsk...
+Writing command line to /tmp/LMKu5GUv8V.dsk...
+qemu -hda /tmp/LMKu5GUv8V.dsk -hdb /tmp/ex3j92Tjaq.dsk -hdc /tmp/8fU9gZ3Zf6.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put sm-full run sm-full
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 76 sector (38 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'sm-full' into the file system...
+Executing 'sm-full':
+(sm-full) begin
+(sm-full) create "quux"
+(sm-full) open "quux"
+(sm-full) writing "quux"
+(sm-full) write 5678 bytes at offset 0 in "quux" failed: FAILED
+sm-full: exit(1)
+Execution of 'sm-full' complete.
+Timer: 61 ticks
+Thread: 0 idle ticks, 59 kernel ticks, 2 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 85 reads, 176 writes
+hd1:0: 76 reads, 0 writes
+Console: 899 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/base/sm-random FAILURE:
+
+run: write 13 bytes at offset 858 failed: FAILED
+
+OUTPUT FROM tests/filesys/base/sm-random:
+
+Copying tests/filesys/base/sm-random into /tmp/OLp8jXMhYR.dsk...
+Writing command line to /tmp/jbq1jsiOZZ.dsk...
+qemu -hda /tmp/jbq1jsiOZZ.dsk -hdb /tmp/18ct7gRCdL.dsk -hdc /tmp/OLp8jXMhYR.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put sm-random run sm-random
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 78 sector (39 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'sm-random' into the file system...
+Executing 'sm-random':
+(sm-random) begin
+(sm-random) create "bazzle"
+(sm-random) open "bazzle"
+(sm-random) write "bazzle" in random order
+(sm-random) write 13 bytes at offset 858 failed: FAILED
+sm-random: exit(1)
+Execution of 'sm-random' complete.
+Timer: 63 ticks
+Thread: 0 idle ticks, 61 kernel ticks, 2 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 87 reads, 172 writes
+hd1:0: 78 reads, 0 writes
+Console: 931 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/base/sm-seq-block FAILURE:
+
+run: write 513 bytes at offset 0 in "noodle" failed: FAILED
+
+OUTPUT FROM tests/filesys/base/sm-seq-block:
+
+Copying tests/filesys/base/sm-seq-block into /tmp/pAFlqtkIKi.dsk...
+Writing command line to /tmp/oQuvdVFQld.dsk...
+qemu -hda /tmp/oQuvdVFQld.dsk -hdb /tmp/XeT7QnEr3h.dsk -hdc /tmp/pAFlqtkIKi.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put sm-seq-block run sm-seq-block
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 76 sector (38 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'sm-seq-block' into the file system...
+Executing 'sm-seq-block':
+(sm-seq-block) begin
+(sm-seq-block) create "noodle"
+(sm-seq-block) open "noodle"
+(sm-seq-block) writing "noodle"
+(sm-seq-block) write 513 bytes at offset 0 in "noodle" failed: FAILED
+sm-seq-block: exit(1)
+Execution of 'sm-seq-block' complete.
+Timer: 64 ticks
+Thread: 0 idle ticks, 61 kernel ticks, 3 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 85 reads, 176 writes
+hd1:0: 76 reads, 0 writes
+Console: 961 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/base/sm-seq-random FAILURE:
+
+run: write 667 bytes at offset 0 in "nibble" failed: FAILED
+
+OUTPUT FROM tests/filesys/base/sm-seq-random:
+
+Copying tests/filesys/base/sm-seq-random into /tmp/5Xh6O8mTh5.dsk...
+Writing command line to /tmp/eInZPx1AP5.dsk...
+qemu -hda /tmp/eInZPx1AP5.dsk -hdb /tmp/sObwgfeqgC.dsk -hdc /tmp/5Xh6O8mTh5.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put sm-seq-random run sm-seq-random
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 76 sector (38 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'sm-seq-random' into the file system...
+Executing 'sm-seq-random':
+(sm-seq-random) begin
+(sm-seq-random) create "nibble"
+(sm-seq-random) open "nibble"
+(sm-seq-random) writing "nibble"
+(sm-seq-random) write 667 bytes at offset 0 in "nibble" failed: FAILED
+sm-seq-random: exit(1)
+Execution of 'sm-seq-random' complete.
+Timer: 62 ticks
+Thread: 0 idle ticks, 59 kernel ticks, 3 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 85 reads, 176 writes
+hd1:0: 76 reads, 0 writes
+Console: 972 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/base/lg-create FAILURE:
+
+run: read of 512 bytes at offset 0 in "blargle" returned 2: FAILED
+
+OUTPUT FROM tests/filesys/base/lg-create:
+
+Copying tests/filesys/base/lg-create into /tmp/bEyZIuH4MF.dsk...
+Writing command line to /tmp/UzbHxw6jL3.dsk...
+qemu -hda /tmp/UzbHxw6jL3.dsk -hdb /tmp/B0DkE4IQkH.dsk -hdc /tmp/bEyZIuH4MF.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put lg-create run lg-create
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 76 sector (38 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'lg-create' into the file system...
+Executing 'lg-create':
+(lg-create) begin
+(lg-create) create "blargle"
+(lg-create) open "blargle" for verification
+(lg-create) size of blargle (2) differs from expected (75678)
+(lg-create) read of 512 bytes at offset 0 in "blargle" returned 2: FAILED
+lg-create: exit(1)
+Execution of 'lg-create' complete.
+Timer: 64 ticks
+Thread: 0 idle ticks, 57 kernel ticks, 7 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 85 reads, 312 writes
+hd1:0: 76 reads, 0 writes
+Console: 987 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/base/lg-full FAILURE:
+
+run: write 75678 bytes at offset 0 in "quux" failed: FAILED
+
+OUTPUT FROM tests/filesys/base/lg-full:
+
+Copying tests/filesys/base/lg-full into /tmp/IsLwlEvFyf.dsk...
+Writing command line to /tmp/BiA3YMVWk5.dsk...
+qemu -hda /tmp/BiA3YMVWk5.dsk -hdb /tmp/IG50AX7Uq6.dsk -hdc /tmp/IsLwlEvFyf.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put lg-full run lg-full
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 76 sector (38 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'lg-full' into the file system...
+Executing 'lg-full':
+(lg-full) begin
+(lg-full) create "quux"
+(lg-full) open "quux"
+(lg-full) writing "quux"
+(lg-full) write 75678 bytes at offset 0 in "quux" failed: FAILED
+lg-full: exit(1)
+Execution of 'lg-full' complete.
+Timer: 65 ticks
+Thread: 0 idle ticks, 59 kernel ticks, 7 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 85 reads, 312 writes
+hd1:0: 76 reads, 0 writes
+Console: 900 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/base/lg-random FAILURE:
+
+run: write 512 bytes at offset 6144 failed: FAILED
+
+OUTPUT FROM tests/filesys/base/lg-random:
+
+Copying tests/filesys/base/lg-random into /tmp/3TEsnsRwaz.dsk...
+Writing command line to /tmp/npB9YbIDlC.dsk...
+qemu -hda /tmp/npB9YbIDlC.dsk -hdb /tmp/xeosJRPeio.dsk -hdc /tmp/3TEsnsRwaz.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put lg-random run lg-random
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 78 sector (39 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'lg-random' into the file system...
+Executing 'lg-random':
+(lg-random) begin
+(lg-random) create "bazzle"
+(lg-random) open "bazzle"
+(lg-random) write "bazzle" in random order
+(lg-random) write 512 bytes at offset 6144 failed: FAILED
+lg-random: exit(1)
+Execution of 'lg-random' complete.
+Timer: 69 ticks
+Thread: 0 idle ticks, 61 kernel ticks, 9 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 87 reads, 318 writes
+hd1:0: 78 reads, 0 writes
+Console: 933 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/base/lg-seq-block FAILURE:
+
+run: write 513 bytes at offset 0 in "noodle" failed: FAILED
+
+OUTPUT FROM tests/filesys/base/lg-seq-block:
+
+Copying tests/filesys/base/lg-seq-block into /tmp/9QjnMsdsiB.dsk...
+Writing command line to /tmp/DXV86BHsH3.dsk...
+qemu -hda /tmp/DXV86BHsH3.dsk -hdb /tmp/x5gj7ZqErU.dsk -hdc /tmp/9QjnMsdsiB.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put lg-seq-block run lg-seq-block
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 76 sector (38 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'lg-seq-block' into the file system...
+Executing 'lg-seq-block':
+(lg-seq-block) begin
+(lg-seq-block) create "noodle"
+(lg-seq-block) open "noodle"
+(lg-seq-block) writing "noodle"
+(lg-seq-block) write 513 bytes at offset 0 in "noodle" failed: FAILED
+lg-seq-block: exit(1)
+Execution of 'lg-seq-block' complete.
+Timer: 67 ticks
+Thread: 0 idle ticks, 59 kernel ticks, 8 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 85 reads, 312 writes
+hd1:0: 76 reads, 0 writes
+Console: 961 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/base/lg-seq-random FAILURE:
+
+run: write 717 bytes at offset 0 in "nibble" failed: FAILED
+
+OUTPUT FROM tests/filesys/base/lg-seq-random:
+
+Copying tests/filesys/base/lg-seq-random into /tmp/P3LQGbZefx.dsk...
+Writing command line to /tmp/6vguo6OPJ0.dsk...
+qemu -hda /tmp/6vguo6OPJ0.dsk -hdb /tmp/rdRFFnPuh2.dsk -hdc /tmp/P3LQGbZefx.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put lg-seq-random run lg-seq-random
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 76 sector (38 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'lg-seq-random' into the file system...
+Executing 'lg-seq-random':
+(lg-seq-random) begin
+(lg-seq-random) create "nibble"
+(lg-seq-random) open "nibble"
+(lg-seq-random) writing "nibble"
+(lg-seq-random) write 717 bytes at offset 0 in "nibble" failed: FAILED
+lg-seq-random: exit(1)
+Execution of 'lg-seq-random' complete.
+Timer: 68 ticks
+Thread: 0 idle ticks, 60 kernel ticks, 8 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 85 reads, 312 writes
+hd1:0: 76 reads, 0 writes
+Console: 972 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/base/syn-read FAILURE:
+
+run: write "data": FAILED
+
+OUTPUT FROM tests/filesys/base/syn-read:
+
+Copying tests/filesys/base/syn-read into /tmp/8jHkIYMwKj.dsk...
+Copying tests/filesys/base/child-syn-read into /tmp/8jHkIYMwKj.dsk...
+Writing command line to /tmp/x7I8EYeNlX.dsk...
+qemu -hda /tmp/x7I8EYeNlX.dsk -hdb /tmp/rCSjYH0NYz.dsk -hdc /tmp/8jHkIYMwKj.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put syn-read put child-syn-read run syn-read
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'syn-read' into the file system...
+Putting 'child-syn-read' into the file system...
+Executing 'syn-read':
+(syn-read) begin
+(syn-read) create "data"
+(syn-read) open "data"
+(syn-read) write "data"
+(syn-read) write "data": FAILED
+syn-read: exit(1)
+Execution of 'syn-read' complete.
+Timer: 70 ticks
+Thread: 0 idle ticks, 68 kernel ticks, 2 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 115 reads, 338 writes
+hd1:0: 161 reads, 0 writes
+Console: 946 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/base/syn-write FAILURE:
+
+run: ((null)) write "stuff": FAILED
+
+OUTPUT FROM tests/filesys/base/syn-write:
+
+Copying tests/filesys/base/syn-write into /tmp/HbXluD7dnx.dsk...
+Copying tests/filesys/base/child-syn-wrt into /tmp/HbXluD7dnx.dsk...
+Writing command line to /tmp/WcAfVOPIGw.dsk...
+qemu -hda /tmp/WcAfVOPIGw.dsk -hdb /tmp/3FSbU1A7yP.dsk -hdc /tmp/HbXluD7dnx.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put syn-write put child-syn-wrt run syn-write
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 160 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'syn-write' into the file system...
+Putting 'child-syn-wrt' into the file system...
+Executing 'syn-write':
+(syn-write) begin
+(syn-write) create "stuff"
+(syn-write) exec child 1 of 10: "child-syn-wrt 0"
+((null)) write "stuff": FAILED
+child-syn-wrt: exit(1)
+(syn-write) exec child 2 of 10: "child-syn-wrt 1"
+((null)) write "stuff": FAILED
+child-syn-wrt: exit(1)
+(syn-write) exec child 3 of 10: "child-syn-wrt 2"
+((null)) write "stuff": FAILED
+child-syn-wrt: exit(1)
+(syn-write) exec child 4 of 10: "child-syn-wrt 3"
+((null)) write "stuff": FAILED
+child-syn-wrt: exit(1)
+(syn-write) exec child 5 of 10: "child-syn-wrt 4"
+((null)) write "stuff": FAILED
+child-syn-wrt: exit(1)
+(syn-write) exec child 6 of 10: "child-syn-wrt 5"
+((null)) write "stuff": FAILED
+child-syn-wrt: exit(1)
+(syn-write) exec child 7 of 10: "child-syn-wrt 6"
+((null)) write "stuff": FAILED
+child-syn-wrt: exit(1)
+(syn-write) exec child 8 of 10: "child-syn-wrt 7"
+((null)) write "stuff": FAILED
+child-syn-wrt: exit(1)
+(syn-write) exec child 9 of 10: "child-syn-wrt 8"
+((null)) write "stuff": FAILED
+child-syn-wrt: exit(1)
+(syn-write) exec child 10 of 10: "child-syn-wrt 9"
+((null)) write "stuff": FAILED
+child-syn-wrt: exit(1)
+(syn-write) wait for child 1 of 10 returned -1 (expected 0)
+(syn-write) wait for child 1 of 10 returned -1 (expected 0): FAILED
+syn-write: exit(1)
+Execution of 'syn-write' complete.
+Timer: 76 ticks
+Thread: 0 idle ticks, 67 kernel ticks, 9 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 481 reads, 344 writes
+hd1:0: 160 reads, 0 writes
+Console: 2043 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/base/syn-remove FAILURE:
+
+run: write "deleteme": FAILED
+
+OUTPUT FROM tests/filesys/base/syn-remove:
+
+Copying tests/filesys/base/syn-remove into /tmp/b0Z9mmeXJG.dsk...
+Writing command line to /tmp/Zyvx98CjDa.dsk...
+qemu -hda /tmp/Zyvx98CjDa.dsk -hdb /tmp/JMNJvUVeAn.dsk -hdc /tmp/b0Z9mmeXJG.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put syn-remove run syn-remove
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+374 pages available in user pool.
+Calibrating timer...  65,433,600 loops/s.
+hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 77 sector (38 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'syn-remove' into the file system...
+Executing 'syn-remove':
+(syn-remove) begin
+(syn-remove) create "deleteme"
+(syn-remove) open "deleteme"
+(syn-remove) remove "deleteme"
+(syn-remove) write "deleteme"
+(syn-remove) write "deleteme": FAILED
+syn-remove: exit(1)
+Execution of 'syn-remove' complete.
+Timer: 61 ticks
+Thread: 0 idle ticks, 59 kernel ticks, 2 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 86 reads, 169 writes
+hd1:0: 77 reads, 0 writes
+Console: 944 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
