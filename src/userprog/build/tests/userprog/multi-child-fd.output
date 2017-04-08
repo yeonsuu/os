@@ -1,8 +1,8 @@
-Copying tests/userprog/multi-child-fd into /tmp/GoBTVGtj1U.dsk...
-Copying ../../tests/userprog/sample.txt into /tmp/GoBTVGtj1U.dsk...
-Copying tests/userprog/child-close into /tmp/GoBTVGtj1U.dsk...
-Writing command line to /tmp/UrS8vwXPSV.dsk...
-qemu -hda /tmp/UrS8vwXPSV.dsk -hdb /tmp/XLYP6anvBJ.dsk -hdc /tmp/GoBTVGtj1U.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/multi-child-fd into /tmp/noMpkln9fn.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/noMpkln9fn.dsk...
+Copying tests/userprog/child-close into /tmp/noMpkln9fn.dsk...
+Writing command line to /tmp/MnfxcZ1yVD.dsk...
+qemu -hda /tmp/MnfxcZ1yVD.dsk -hdb /tmp/YH0WAGjlm2.dsk -hdc /tmp/noMpkln9fn.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put multi-child-fd put sample.txt put child-close run multi-child-fd
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -20,9 +20,8 @@ Executing 'multi-child-fd':
 (multi-child-fd) begin
 (multi-child-fd) open "sample.txt"
 (child-close) begin
-(child-close) end
-child-close: exit(0)
-(multi-child-fd) wait(exec()) = 0
+child-close: exit(-1)
+(multi-child-fd) wait(exec()) = -1
 (multi-child-fd) verified contents of "sample.txt"
 (multi-child-fd) end
 multi-child-fd: exit(0)
@@ -30,9 +29,9 @@ Execution of 'multi-child-fd' complete.
 Timer: 66 ticks
 Thread: 0 idle ticks, 64 kernel ticks, 2 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 167 reads, 324 writes
+hd0:1: 173 reads, 324 writes
 hd1:0: 156 reads, 0 writes
-Console: 1138 characters output
+Console: 1122 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

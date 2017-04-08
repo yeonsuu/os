@@ -1,7 +1,7 @@
-Copying tests/userprog/read-zero into /tmp/SyetmbNzyI.dsk...
-Copying ../../tests/userprog/sample.txt into /tmp/SyetmbNzyI.dsk...
-Writing command line to /tmp/25MgmI19DS.dsk...
-qemu -hda /tmp/25MgmI19DS.dsk -hdb /tmp/qujiimvgSI.dsk -hdc /tmp/SyetmbNzyI.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/read-zero into /tmp/OWHx95LKPP.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/OWHx95LKPP.dsk...
+Writing command line to /tmp/kXoJyMgmuA.dsk...
+qemu -hda /tmp/kXoJyMgmuA.dsk -hdb /tmp/Lpz1lrD68x.dsk -hdc /tmp/OWHx95LKPP.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put read-zero put sample.txt run read-zero
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -20,10 +20,10 @@ Executing 'read-zero':
 (read-zero) end
 read-zero: exit(0)
 Execution of 'read-zero' complete.
-Timer: 60 ticks
-Thread: 0 idle ticks, 59 kernel ticks, 1 user ticks
+Timer: 61 ticks
+Thread: 0 idle ticks, 60 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 90 reads, 160 writes
+hd0:1: 92 reads, 160 writes
 hd1:0: 75 reads, 0 writes
 Console: 884 characters output
 Keyboard: 0 keys pressed

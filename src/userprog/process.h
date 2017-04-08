@@ -12,11 +12,16 @@ struct fd_file
 	struct file* file;
 	struct list_elem elem;
 };
+struct childpid_elem
+{
+	tid_t childpid;
+	struct list_elem elem;
+};
 
 struct process
 {
 	tid_t pid;
-	tid_t child_pid;
+	struct list children_pids;
 	tid_t parent_pid;
 	struct semaphore sema_pwait;
 	struct semaphore sema_pexec;
@@ -27,6 +32,8 @@ struct process
 	/* Process's file list */
 	struct list file_list;
 	int fd_cnt;
+	struct file * exec_file;	
+
 };
 
 void process_init (void);

@@ -13,7 +13,7 @@
 #include "devices/input.h"
 
 
-
+struct lock filesys_lock;
 
 static void syscall_handler (struct intr_frame *);
 
@@ -21,6 +21,7 @@ void
 syscall_init (void) 
 {
   intr_register_int (0x30, 3, INTR_ON, syscall_handler, "syscall");
+  lock_init(&filesys_lock);
 }
 
 
@@ -82,7 +83,7 @@ syscall_handler (struct intr_frame *f)
 
   case SYS_REMOVE :   
     syscall_arguments(argv, sp, 1);     
-  	//sys_remove(argv[0]);
+  	f -> eax = sys_remove((char *)*(uint32_t *)argv[0]);
   	break;
 
   case SYS_OPEN :  
@@ -107,17 +108,17 @@ syscall_handler (struct intr_frame *f)
 
   case SYS_SEEK :
     syscall_arguments(argv, sp, 2);
-  	//sys_seek(argv[0], argv[1]);  
+    sys_seek((int)*argv[0], (unsigned)*argv[1]);
   	break;
 
   case SYS_TELL :  
     syscall_arguments(argv, sp, 1);
-  	//sys_tell(argv[0]);
+  	f->eax = sys_tell((int)*argv[0]);
   	break;
 
   case SYS_CLOSE : 
     syscall_arguments(argv, sp, 1);
-  	//sys_close(argv[0]);
+  	sys_close((int)*argv[0]);
   	break;
  }
  
@@ -180,8 +181,10 @@ sys_exec(const char *cmd_line)
   	  //printf("!!!syscall : exec!!!\n");
   if(!is_valid_usraddr((void *)cmd_line))
     return -1;
-  else
-    return process_execute(cmd_line);
+  else{
+    int result = process_execute(cmd_line);
+    return result;
+  }
 
 
 }
@@ -209,13 +212,15 @@ sys_create(const char *file, unsigned initial_size)
       sys_exit(-1);  
   return filesys_create(file, initial_size);
 }
-/*
-void
-sys_remove(args[0])
+bool
+sys_remove(const char *file)
 {
-  eax;
+  if(file == NULL)
+    sys_exit(-1);
+  if(!is_valid_usraddr((void *)file))
+    sys_exit(-1);
+  return filesys_remove(file);  
 }
-*/
 int
 sys_open(const char *file)
 {
@@ -264,30 +269,39 @@ sys_read(int fd, const void *buffer, unsigned size)
 {
 
   struct file *f;
-
-  if(!is_valid_usraddr((void *)buffer)){
+  if((void *)buffer == NULL){
+    sys_exit(-1);
+  }
+  if(!is_valid_usraddr((void *)buffer) || !is_user_vaddr (buffer + size)){
     sys_exit(-1);
   }
   if (fd == 1){
     sys_exit(-1);
   }
+  lock_acquire(&filesys_lock);
+  int result;
+
   if(fd == 0){
     int i;
     for (i = 0; i !=(int)size; i++){
       *(uint8_t *)buffer = input_getc();
       buffer++;
     }
-    return size;
-  }  
+    result = size;
+    lock_release(&filesys_lock);
+  }
+
   else{
     if (find_file(fd) == NULL){
+      lock_release(&filesys_lock);
       sys_exit(-1);
     }
     
     f = find_file(fd)->file;
-    
-    return file_read(f, buffer, (off_t) size);
+    result = file_read(f, buffer, (off_t) size);
+    lock_release(&filesys_lock);
   }
+  return result;
 }
 
 /* return the number of bytes actually written*/
@@ -296,38 +310,70 @@ sys_write(int fd, const void *buffer, unsigned size)
 {
   struct file *f;
 
-  if(!is_valid_usraddr((void *)buffer)){
+  if(!is_valid_usraddr((void *)buffer) || !is_user_vaddr (buffer + size)){
     sys_exit(-1);
   }
   if (fd == 0){
     sys_exit(-1);
   }
+
+  lock_acquire(&filesys_lock);
+  int result;
   if(fd == 1){
     putbuf (buffer, size);
-    return size;
+    result = size;
   }  
   else{
     if (find_file(fd) == NULL){
+      lock_release(&filesys_lock);
       sys_exit(-1);
     }
     
     f = find_file(fd)->file;
-    
-    return file_write(f, buffer, (off_t) size);
+    result = file_write(f, buffer, (off_t) size);
   }
-}
-/*
-void
-sys_seek(args[0], args[1])
-{
-  eax;
+  lock_release(&filesys_lock);
+
+  return result;
 }
 void
-sys_tell(args[0])
+sys_seek(int fd, unsigned position)
 {
-  eax;
+  struct file *f;
+  if (fd == 0){
+    ASSERT(0);
+  }
+  if(fd == 1){
+    ASSERT(0);
+  }  
+
+  if (find_file(fd) == NULL){
+    sys_exit(-1);
+  }
+  f = find_file(fd)->file;
+    
+  file_seek(f, position);
+  return;
 }
-*/
+
+unsigned
+sys_tell(int fd)
+{
+  struct file *f;
+  if (fd == 0){
+    ASSERT(0);
+  }
+  if(fd == 1){
+    ASSERT(0);
+  }  
+  if (find_file(fd) == NULL){
+    sys_exit(-1);
+  }
+  f = find_file(fd)->file;
+    
+  return file_tell(f);
+}
+
 void
 sys_close(int fd)
 {
@@ -335,15 +381,17 @@ sys_close(int fd)
     sys_exit(-1);
   if (fd == 1)
     sys_exit(-1);
-    struct file *f = find_file(fd)->file;
+  if (find_file(fd) == NULL){
+    sys_exit(-1);
+  }
+  struct file *f = find_file(fd)->file;
   
   if (f == NULL)
     sys_exit(-1);
 
   else{
-    file_close (&f);
+    file_close (f);
     list_remove(&find_file(fd)->elem);
-
   }
 }
 

@@ -1,7 +1,7 @@
-Copying tests/userprog/rox-multichild into /tmp/pi8sF9up3M.dsk...
-Copying tests/userprog/child-rox into /tmp/pi8sF9up3M.dsk...
-Writing command line to /tmp/rwqPwMNfuX.dsk...
-qemu -hda /tmp/rwqPwMNfuX.dsk -hdb /tmp/f8JIjaouW9.dsk -hdc /tmp/pi8sF9up3M.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/rox-multichild into /tmp/7y6n4ueYqu.dsk...
+Copying tests/userprog/child-rox into /tmp/7y6n4ueYqu.dsk...
+Writing command line to /tmp/dAXcHMzF17.dsk...
+qemu -hda /tmp/dAXcHMzF17.dsk -hdb /tmp/HmzR2UhCSg.dsk -hdc /tmp/7y6n4ueYqu.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put rox-multichild put child-rox run rox-multichild
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -20,17 +20,45 @@ Executing 'rox-multichild':
 (rox-multichild) read "child-rox"
 (rox-multichild) write "child-rox"
 (rox-multichild) exec "child-rox 5"
-load: child-rox: error loading executable
-child-rox: exit(-1)
-(rox-multichild) exec "child-rox 5": FAILED
-rox-multichild: exit(1)
+(child-rox) begin
+(child-rox) try to write "child-rox"
+(child-rox) exec "child-rox 4"
+(child-rox) begin
+(child-rox) try to write "child-rox"
+(child-rox) exec "child-rox 3"
+(child-rox) begin
+(child-rox) try to write "child-rox"
+(child-rox) exec "child-rox 2"
+(child-rox) begin
+(child-rox) try to write "child-rox"
+(child-rox) exec "child-rox 1"
+(child-rox) begin
+(child-rox) try to write "child-rox"
+(child-rox) try to write "child-rox"
+(child-rox) end
+child-rox: exit(12)
+(child-rox) try to write "child-rox"
+(child-rox) end
+child-rox: exit(12)
+(child-rox) try to write "child-rox"
+(child-rox) end
+child-rox: exit(12)
+(child-rox) try to write "child-rox"
+(child-rox) end
+child-rox: exit(12)
+(child-rox) try to write "child-rox"
+(child-rox) end
+child-rox: exit(12)
+(rox-multichild) write "child-rox"
+(rox-multichild) end
+rox-multichild: exit(0)
 Execution of 'rox-multichild' complete.
-Timer: 65 ticks
-Thread: 0 idle ticks, 64 kernel ticks, 1 user ticks
+Timer: 71 ticks
+Thread: 0 idle ticks, 65 kernel ticks, 6 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 96 reads, 323 writes
+hd0:1: 305 reads, 324 writes
 hd1:0: 156 reads, 0 writes
-Console: 1118 characters output
+Console: 1833 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

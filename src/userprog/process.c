@@ -39,6 +39,7 @@ process_init (void)
   initial_process -> pid = thread_current() -> tid;
   list_push_back(&process_list, &initial_process->elem);
   list_init(&initial_process -> file_list);
+  list_init(&initial_process -> children_pids);
   initial_process -> fd_cnt = 2;
 }
 /* Starts a new thread running a user program loaded from
@@ -93,7 +94,9 @@ process_execute (const char *file_name)
     child->pid = tid;
     child->parent_pid = thread_current()->tid;
     list_init(&child->file_list);
+    list_init(&child->children_pids);
     child->fd_cnt = 2;
+    //printf("parent pid : %d child pid :%d\n", thread_current()->tid, child->pid);
     list_push_back(&process_list, &child->elem);
 
     sema_down(&curr_p->sema_pexec);
@@ -103,7 +106,10 @@ process_execute (const char *file_name)
       tid = -1;
     }
     else{
-      curr_p->child_pid = tid;
+      struct childpid_elem *child_elem;
+      child_elem = malloc (sizeof *child_elem);
+      child_elem->childpid = tid;
+      list_push_back(&curr_p->children_pids, &child_elem->elem);
     }
   }
   return tid;   
@@ -127,8 +133,12 @@ start_process (void *f_name)
   if_.gs = if_.fs = if_.es = if_.ds = if_.ss = SEL_UDSEG;
   if_.cs = SEL_UCSEG;
   if_.eflags = FLAG_IF | FLAG_MBS;
-  ////printf("%s\n", token);
+
+  struct file* file = filesys_open(token);
+  if (file != NULL) file_deny_write(file);
+
   success = load (token, &if_.eip, &if_.esp);
+
   ////printf("!!!start_process!!!\n");
 
   struct process *curr_p;
@@ -142,12 +152,17 @@ start_process (void *f_name)
 
   if(!list_empty(&parent_p -> sema_pexec.waiters))
     sema_up(&parent_p -> sema_pexec);
-
+  
   if (!success) {
     palloc_free_page (file_name);
+    if(file != NULL)
+      file_allow_write(file);
     sys_exit (-1);
   }
 
+  else{
+    curr_p->exec_file = file;
+  }
   /* Argument Passing */
   char **argv;
   int argc = 0;
@@ -223,7 +238,7 @@ process_wait (tid_t child_tid)
     return -1;
   }
 
-  if (curr_p->child_pid != find_process(child_tid)->pid){//if child_tid is not a child of current process
+  if (curr_p->pid != find_process(child_tid)->parent_pid){//if child_tid is not a child of current process
     return -1;
   }
   else{   //if child
@@ -276,22 +291,36 @@ process_exit (void)
   curr_p = find_process(curr->tid);
   curr_p -> is_dead = true;
   parent_p = find_process(curr_p->parent_pid);
-  child_p = find_process(curr_p->child_pid);
-
 
   if(!list_empty(&parent_p->sema_pwait.waiters) )
     sema_up(&parent_p->sema_pwait);
-  
-  if ((child_p != NULL) && (child_p->is_dead == true))
-    list_remove(&child_p->elem);
+
+  if (!list_empty(&curr_p -> children_pids)){
+    struct list_elem *e;
+    struct childpid_elem *child_elem;
+    e = list_begin(&curr_p -> children_pids);
+
+    while(e != list_end(&curr_p -> children_pids))
+    {
+      child_elem = list_entry(e, struct childpid_elem, elem);
+      child_p = find_process(child_elem->childpid);
+      e = list_next(e);
+
+      if ((child_p != NULL) && (child_p->is_dead == true)){
+        list_remove(&child_p->elem);
+      }
+    }
+  }
 
   if (parent_p == NULL){
     list_remove(&curr_p->elem); //Do not store the exit code!
   }
   else if (parent_p->is_dead == true)
-    list_remove(&curr_p->elem);
-
+    list_remove(&curr_p->elem);  
   
+  if(curr_p->exec_file){
+    file_close (curr_p->exec_file);   //aaaaaa
+  }
 }
 
 /* Sets up the CPU for running user code in the current
@@ -420,6 +449,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
   /* Open executable file. */
   //old_level = intr_disable();
   file = filesys_open (file_name);   //critical section
+
   //intr_set_level(old_level);
   if (file == NULL) 
     {
@@ -511,6 +541,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
  done:
   /* We arrive here whether the load is successful or not. */
   file_close (file);
+
   return success;
 }
 
@@ -722,15 +753,17 @@ bool
 is_valid_usraddr (void *addr){
   struct thread *t = thread_current();
   void *temp = addr;
-  if (is_kernel_vaddr(temp)){
+  if (is_kernel_vaddr(addr)){
       return false;
   }
-  if (temp == NULL){
+  if (addr == NULL){
     return false;
   }
-  if (pagedir_get_page (t->pagedir, temp) == NULL){
+  if (pagedir_get_page (t->pagedir, addr) == NULL){
     return false;
   }
+  if (!is_user_vaddr(addr))
+    return false;
   else 
     return true;
   

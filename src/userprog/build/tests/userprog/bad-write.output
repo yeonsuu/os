@@ -1,6 +1,6 @@
-Copying tests/userprog/bad-write into /tmp/6jwB3l19tp.dsk...
-Writing command line to /tmp/xWtw6MKBgr.dsk...
-qemu -hda /tmp/xWtw6MKBgr.dsk -hdb /tmp/99sBQnkMzU.dsk -hdc /tmp/6jwB3l19tp.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/bad-write into /tmp/PqIgOK34Wn.dsk...
+Writing command line to /tmp/MjCXOXVsk1.dsk...
+qemu -hda /tmp/MjCXOXVsk1.dsk -hdb /tmp/rTvXKGB8YO.dsk -hdc /tmp/PqIgOK34Wn.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put bad-write run bad-write
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -15,19 +15,14 @@ Putting 'bad-write' into the file system...
 Executing 'bad-write':
 (bad-write) begin
 Page fault at 0: not present error writing page in user context.
-bad-write: dying due to interrupt 0x0e (#PF Page-Fault Exception).
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x80480a6
- cr2=00000000 error=00000006
- eax=00000027 ebx=00000000 ecx=000000ad edx=0000000e
- esi=00000000 edi=00000000 esp=bfffffa0 ebp=bfffffa8
- cs=001b ds=0023 es=0023 ss=0023
+bad-write: exit(-1)
 Execution of 'bad-write' complete.
-Timer: 60 ticks
-Thread: 0 idle ticks, 58 kernel ticks, 2 user ticks
+Timer: 58 ticks
+Thread: 0 idle ticks, 57 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 59 reads, 154 writes
+hd0:1: 61 reads, 154 writes
 hd1:0: 73 reads, 0 writes
-Console: 1118 characters output
+Console: 844 characters output
 Keyboard: 0 keys pressed
 Exception: 1 page faults
 Powering off...

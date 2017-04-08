@@ -1,6 +1,6 @@
-Copying tests/userprog/no-vm/multi-oom into /tmp/h9dQttD4bj.dsk...
-Writing command line to /tmp/IPvNpo9hmQ.dsk...
-qemu -hda /tmp/IPvNpo9hmQ.dsk -hdb /tmp/lXXbFDuuQT.dsk -hdc /tmp/h9dQttD4bj.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/no-vm/multi-oom into /tmp/yU5QZcgRn8.dsk...
+Writing command line to /tmp/chMDd9tvxw.dsk...
+qemu -hda /tmp/chMDd9tvxw.dsk -hdb /tmp/TkRSirp3SH.dsk -hdc /tmp/yU5QZcgRn8.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put multi-oom run multi-oom
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -19,51 +19,24 @@ multi-oom: exit(-1)
 multi-oom: exit(-1)
 multi-oom: exit(-1)
 Page fault at 0xc0000000: rights violation error reading page in user context.
-multi-oom: dying due to interrupt 0x0e (#PF Page-Fault Exception).
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x804817e
- cr2=c0000000 error=00000005
- eax=00000002 ebx=c0000000 ecx=a73db9f4 edx=a73db9f2
- esi=bffffff3 edi=0804ac43 esp=bfffff60 ebp=bfffff78
- cs=001b ds=0023 es=0023 ss=0023
-(multi-oom) crashed child should return -1.: FAILED
-multi-oom: exit(1)
-multi-oom: exit(1)
-multi-oom: exit(1)
-multi-oom: exit(1)
-multi-oom: exit(1)
-multi-oom: exit(1)
-multi-oom: exit(1)
-multi-oom: exit(1)
-multi-oom: exit(1)
-multi-oom: exit(1)
-multi-oom: exit(1)
-multi-oom: exit(1)
-multi-oom: exit(1)
-multi-oom: exit(1)
-multi-oom: exit(1)
-multi-oom: exit(1)
-multi-oom: exit(1)
-multi-oom: exit(1)
-multi-oom: exit(1)
-multi-oom: exit(1)
+multi-oom: exit(-1)
+multi-oom: exit(-1)
+multi-oom: exit(-1)
 multi-oom: exit(-858993460)
-Page fault at 0x28: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc010734a
- cr2=00000028 error=00000000
- eax=00000024 ebx=00000024 ecx=c0152fcc edx=00000000
- esi=00000000 edi=00000001 esp=00009504 ebp=c0151f20
- cs=0008 ds=0010 es=0010 ss=0000
-Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0107276 0xc010ab1f 0xc010abd9 0xc0101745 0xc010191b 0xc010734a 0xc0107928 0xc01095c1 0xc0100d3b.
+Page fault at 0x34: not present error reading page in kernel context.
+multi-oom: exit(-1)
+Page fault at 0x20: not present error reading page in kernel context.
+Kernel PANIC at ../../userprog/pagedir.c:61 in lookup_page(): assertion `pd != NULL' failed.
+Call stack: 0xc0107276 0xc010a241 0xc010a637 0xc010a06f 0xc010ac93 0xc0101745 0xc010191b 0xc010734a 0xc0107928 0xc01098a2 0xc0100bc5 0xc010b019 0xc010aca3 0xc0101745 0xc010191b 0xc010734a 0xc0107928 0xc0109616 0xc0100d3b.
 The `backtrace' program can make call stacks useful.
 Read "Backtraces" in the "Debugging Tools" chapter
 of the Pintos documentation for more information.
-Timer: 106 ticks
-Thread: 0 idle ticks, 68 kernel ticks, 38 user ticks
+Timer: 82 ticks
+Thread: 0 idle ticks, 63 kernel ticks, 19 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 7437 reads, 178 writes
+hd0:1: 3199 reads, 178 writes
 hd1:0: 85 reads, 0 writes
-Console: 2307 characters output
+Console: 1603 characters output
 Keyboard: 0 keys pressed
-Exception: 2 page faults
+Exception: 3 page faults
 Powering off...
