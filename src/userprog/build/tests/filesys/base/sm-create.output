@@ -1,6 +1,6 @@
-Copying tests/filesys/base/sm-create into /tmp/vwNqZDCk44.dsk...
-Writing command line to /tmp/2JwbDuZQla.dsk...
-qemu -hda /tmp/2JwbDuZQla.dsk -hdb /tmp/QrnsFGp3ui.dsk -hdc /tmp/vwNqZDCk44.dsk -m 4 -net none -nographic -monitor null
+Copying tests/filesys/base/sm-create into /tmp/8FRVeadvCe.dsk...
+Writing command line to /tmp/Ruhc3lWH1h.dsk...
+qemu -hda /tmp/Ruhc3lWH1h.dsk -hdb /tmp/spegXDnpxY.dsk -hdc /tmp/8FRVeadvCe.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put sm-create run sm-create
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -16,23 +16,17 @@ Executing 'sm-create':
 (sm-create) begin
 (sm-create) create "blargle"
 (sm-create) open "blargle" for verification
-Page fault at 0x23: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc010c897
- cr2=00000023 error=00000000
- eax=00000007 ebx=bffffd10 ecx=c0120ffc edx=c011df2c
- esi=c011dfb0 edi=0000162e esp=c011df24 ebp=c011df04
- cs=0008 ds=0010 es=0010 ss=bc4e
-Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0107276 0xc010aaef 0xc010aba9 0xc0101745 0xc010191b 0xc010c897 0xc010bc4e 0xc010b014 0xc010ad6a 0xc0101745 0xc010191b 0x804a1c9 0x804840a 0x804854a 0x8048102 0x8048827 0x8048854.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
+(sm-create) verified contents of "blargle"
+(sm-create) close "blargle"
+(sm-create) end
+sm-create: exit(0)
+Execution of 'sm-create' complete.
 Timer: 60 ticks
 Thread: 0 idle ticks, 58 kernel ticks, 2 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 85 reads, 176 writes
+hd0:1: 97 reads, 176 writes
 hd1:0: 76 reads, 0 writes
-Console: 1545 characters output
+Console: 938 characters output
 Keyboard: 0 keys pressed
-Exception: 1 page faults
+Exception: 0 page faults
 Powering off...

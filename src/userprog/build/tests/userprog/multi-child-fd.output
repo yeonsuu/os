@@ -1,8 +1,8 @@
-Copying tests/userprog/multi-child-fd into /tmp/DdAxjHUBP0.dsk...
-Copying ../../tests/userprog/sample.txt into /tmp/DdAxjHUBP0.dsk...
-Copying tests/userprog/child-close into /tmp/DdAxjHUBP0.dsk...
-Writing command line to /tmp/stfjcvKd0I.dsk...
-qemu -hda /tmp/stfjcvKd0I.dsk -hdb /tmp/WZ3vWUm72S.dsk -hdc /tmp/DdAxjHUBP0.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/multi-child-fd into /tmp/GoBTVGtj1U.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/GoBTVGtj1U.dsk...
+Copying tests/userprog/child-close into /tmp/GoBTVGtj1U.dsk...
+Writing command line to /tmp/UrS8vwXPSV.dsk...
+qemu -hda /tmp/UrS8vwXPSV.dsk -hdb /tmp/XLYP6anvBJ.dsk -hdc /tmp/GoBTVGtj1U.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put multi-child-fd put sample.txt put child-close run multi-child-fd
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -23,23 +23,16 @@ Executing 'multi-child-fd':
 (child-close) end
 child-close: exit(0)
 (multi-child-fd) wait(exec()) = 0
-Page fault at 0x23: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc010c897
- cr2=00000023 error=00000000
- eax=00000007 ebx=bffffcb0 ecx=c0120ffc edx=c011df2c
- esi=c011dfb0 edi=000000ef esp=c011df24 ebp=c011df04
- cs=0008 ds=0010 es=0010 ss=bc4e
-Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0107276 0xc010aaef 0xc010aba9 0xc0101745 0xc010191b 0xc010c897 0xc010bc4e 0xc010b014 0xc010ad6a 0xc0101745 0xc010191b 0x804a0c9 0x8048492 0x8048138 0x8048177 0x8048750.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
+(multi-child-fd) verified contents of "sample.txt"
+(multi-child-fd) end
+multi-child-fd: exit(0)
+Execution of 'multi-child-fd' complete.
 Timer: 66 ticks
 Thread: 0 idle ticks, 64 kernel ticks, 2 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 166 reads, 324 writes
+hd0:1: 167 reads, 324 writes
 hd1:0: 156 reads, 0 writes
-Console: 1740 characters output
+Console: 1138 characters output
 Keyboard: 0 keys pressed
-Exception: 1 page faults
+Exception: 0 page faults
 Powering off...

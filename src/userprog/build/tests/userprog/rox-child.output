@@ -1,12 +1,12 @@
-Copying tests/userprog/rox-child into /tmp/pTQMxvYn1n.dsk...
-Copying tests/userprog/child-rox into /tmp/pTQMxvYn1n.dsk...
-Writing command line to /tmp/9JhrF3jV6L.dsk...
-qemu -hda /tmp/9JhrF3jV6L.dsk -hdb /tmp/OEdjTEiCg0.dsk -hdc /tmp/pTQMxvYn1n.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/rox-child into /tmp/k5lM7ttwjS.dsk...
+Copying tests/userprog/child-rox into /tmp/k5lM7ttwjS.dsk...
+Writing command line to /tmp/bzr4ZIxFwo.dsk...
+qemu -hda /tmp/bzr4ZIxFwo.dsk -hdb /tmp/2CtHFCiZ3w.dsk -hdc /tmp/k5lM7ttwjS.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put rox-child put child-rox run rox-child
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
 374 pages available in user pool.
-Calibrating timer...  78,540,800 loops/s.
+Calibrating timer...  58,880,000 loops/s.
 hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 156 sector (78 kB) disk, model "QEMU HARDDISK", serial "QM00003"
@@ -18,17 +18,19 @@ Executing 'rox-child':
 (rox-child) begin
 (rox-child) open "child-rox"
 (rox-child) read "child-rox"
-Kernel PANIC at ../../devices/disk.c:436 in select_sector(): assertion `sec_no < d->capacity' failed.
-Call stack: 0xc0107276 0xc0104cee 0xc01046e3 0xc010c5fe 0xc010bade 0xc010b068 0xc010ada8 0xc0101745 0xc010191b 0x804a1a1 0x80480fc 0x8048233 0x804880c.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
-Timer: 67 ticks
-Thread: 0 idle ticks, 66 kernel ticks, 1 user ticks
+(rox-child) write "child-rox"
+(rox-child) exec "child-rox 1"
+load: child-rox: error loading executable
+child-rox: exit(-1)
+(rox-child) exec "child-rox 1": FAILED
+rox-child: exit(1)
+Execution of 'rox-child' complete.
+Timer: 69 ticks
+Thread: 0 idle ticks, 67 kernel ticks, 2 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 90 reads, 322 writes
+hd0:1: 96 reads, 323 writes
 hd1:0: 156 reads, 0 writes
-Console: 1250 characters output
+Console: 1058 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

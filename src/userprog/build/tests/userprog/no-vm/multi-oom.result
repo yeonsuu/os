@@ -1,10 +1,10 @@
 FAIL
 Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0107276 0xc010aaef 0xc010aba9 0xc0101745 0xc010191b 0xc010734a 0xc0107928 0xc01095c1 0xc0100d3b
+Call stack: 0xc0107276 0xc010ab1f 0xc010abd9 0xc0101745 0xc010191b 0xc010734a 0xc0107928 0xc01095c1 0xc0100d3b
 Translation of call stack:
 0xc0107276: debug_panic (.../../lib/kernel/debug.c:34)
-0xc010aaef: kill (.../userprog/exception.c:105)
-0xc010aba9: page_fault (.../userprog/exception.c:160)
+0xc010ab1f: kill (.../userprog/exception.c:105)
+0xc010abd9: page_fault (.../userprog/exception.c:160)
 0xc0101745: intr_handler (..../threads/interrupt.c:361)
 0xc010191b: intr_entry (threads/intr-stubs.S:38)
 0xc010734a: list_begin (..../../lib/kernel/list.c:75)

@@ -97,7 +97,7 @@ syscall_handler (struct intr_frame *f)
 
   case SYS_READ :   
     syscall_arguments(argv, sp, 3);
-  	f->eax = sys_read((int)*argv[0], (const void *)*(uint32_t *)argv[1], (unsigned) * argv[2]);
+  	f->eax = (off_t) sys_read((int)*argv[0], (void *)*(uint32_t *)argv[1], (unsigned) * argv[2]);
   	break;
 
   case SYS_WRITE : 
@@ -219,7 +219,8 @@ sys_remove(args[0])
 int
 sys_open(const char *file)
 {
-  struct fd_file fd_and_flie;
+  struct fd_file *fd_and_file;
+  fd_and_file = malloc (sizeof *fd_and_file);
   int fd;
   struct file * f;
   struct process * p;
@@ -227,11 +228,11 @@ sys_open(const char *file)
 
   if(file == NULL)
     sys_exit(-1);
-  if(!is_valid_usraddr(file))
+  if(!is_valid_usraddr((void *)file))
     sys_exit(-1);
 
   f = filesys_open (file);
-
+  //printf("open file length %d\n", file_length(f));
   if(f == NULL){
     fd = -1;
   }
@@ -239,11 +240,11 @@ sys_open(const char *file)
     fd = p->fd_cnt;
     p->fd_cnt++;
 
-    fd_and_flie.fd = fd;
-    fd_and_flie.file = f;
+    fd_and_file->fd = fd;
+    fd_and_file->file = f;
 
     
-    list_push_back(&p->file_list, &fd_and_flie.elem);
+    list_push_back(&p->file_list, &fd_and_file->elem);
   }
   return fd;
 }
@@ -252,55 +253,75 @@ int
 sys_filesize(int fd)
 {
   struct file *f = find_file(fd)->file;
-  ASSERT(f!=NULL);
-  return file_length (f);
-}
 
+  int length = file_length (f);
+
+  return length;
+}
 
 int
 sys_read(int fd, const void *buffer, unsigned size)
 {
-  struct file * f;
-  off_t result;
-  f = find_file(fd);
-  if (f == NULL){
+
+  struct file *f;
+
+  if(!is_valid_usraddr((void *)buffer)){
+    sys_exit(-1);
+  }
+  if (fd == 1){
     sys_exit(-1);
   }
   if(fd == 0){
-    input_getc();
-    return 0;
+    int i;
+    for (i = 0; i !=(int)size; i++){
+      *(uint8_t *)buffer = input_getc();
+      buffer++;
+    }
+    return size;
   }  
   else{
-    result = file_read(f, buffer, size);
-    return result;
+    if (find_file(fd) == NULL){
+      sys_exit(-1);
+    }
+    
+    f = find_file(fd)->file;
+    
+    return file_read(f, buffer, (off_t) size);
   }
 }
-
 
 /* return the number of bytes actually written*/
 int
 sys_write(int fd, const void *buffer, unsigned size)
 {
-  int bytes = 0;
-  if (fd == 1){
-    putbuf (buffer, size);
-    bytes = size;
-  }
-  return bytes;
-}
+  struct file *f;
 
-void
-sys_seek(int fd, unsigned position)
-{
-  struct file * f;
-  f = find_file(fd)->file;
-  if (f == NULL){
+  if(!is_valid_usraddr((void *)buffer)){
     sys_exit(-1);
   }
-  file_seek(f, (off_t)position);
+  if (fd == 0){
+    sys_exit(-1);
+  }
+  if(fd == 1){
+    putbuf (buffer, size);
+    return size;
+  }  
+  else{
+    if (find_file(fd) == NULL){
+      sys_exit(-1);
+    }
+    
+    f = find_file(fd)->file;
+    
+    return file_write(f, buffer, (off_t) size);
+  }
 }
-
 /*
+void
+sys_seek(args[0], args[1])
+{
+  eax;
+}
 void
 sys_tell(args[0])
 {
@@ -314,13 +335,13 @@ sys_close(int fd)
     sys_exit(-1);
   if (fd == 1)
     sys_exit(-1);
-  struct file *f = find_file(fd)->file;
+    struct file *f = find_file(fd)->file;
   
   if (f == NULL)
     sys_exit(-1);
 
   else{
-    file_close (f);
+    file_close (&f);
     list_remove(&find_file(fd)->elem);
 
   }

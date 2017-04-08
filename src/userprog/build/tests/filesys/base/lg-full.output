@@ -1,6 +1,6 @@
-Copying tests/filesys/base/lg-full into /tmp/aVhNoAJPsB.dsk...
-Writing command line to /tmp/F6xSsw0iNm.dsk...
-qemu -hda /tmp/F6xSsw0iNm.dsk -hdb /tmp/w2WnNlgM2S.dsk -hdc /tmp/aVhNoAJPsB.dsk -m 4 -net none -nographic -monitor null
+Copying tests/filesys/base/lg-full into /tmp/nEdCNiwrtB.dsk...
+Writing command line to /tmp/T1WFgo79Zu.dsk...
+qemu -hda /tmp/T1WFgo79Zu.dsk -hdb /tmp/SexG2SDvBx.dsk -hdc /tmp/nEdCNiwrtB.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put lg-full run lg-full
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -17,15 +17,19 @@ Executing 'lg-full':
 (lg-full) create "quux"
 (lg-full) open "quux"
 (lg-full) writing "quux"
-(lg-full) write 75678 bytes at offset 0 in "quux" failed: FAILED
-lg-full: exit(1)
+(lg-full) close "quux"
+(lg-full) open "quux" for verification
+(lg-full) verified contents of "quux"
+(lg-full) close "quux"
+(lg-full) end
+lg-full: exit(0)
 Execution of 'lg-full' complete.
-Timer: 69 ticks
-Thread: 0 idle ticks, 62 kernel ticks, 7 user ticks
+Timer: 71 ticks
+Thread: 0 idle ticks, 59 kernel ticks, 12 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 85 reads, 312 writes
+hd0:1: 237 reads, 460 writes
 hd1:0: 76 reads, 0 writes
-Console: 900 characters output
+Console: 974 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

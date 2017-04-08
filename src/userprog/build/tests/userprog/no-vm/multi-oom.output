@@ -1,6 +1,6 @@
-Copying tests/userprog/no-vm/multi-oom into /tmp/1wHrwmaMUg.dsk...
-Writing command line to /tmp/UueDhToA7D.dsk...
-qemu -hda /tmp/UueDhToA7D.dsk -hdb /tmp/NUg2v9cjWR.dsk -hdc /tmp/1wHrwmaMUg.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/no-vm/multi-oom into /tmp/h9dQttD4bj.dsk...
+Writing command line to /tmp/IPvNpo9hmQ.dsk...
+qemu -hda /tmp/IPvNpo9hmQ.dsk -hdb /tmp/lXXbFDuuQT.dsk -hdc /tmp/h9dQttD4bj.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put multi-oom run multi-oom
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -50,20 +50,20 @@ multi-oom: exit(-858993460)
 Page fault at 0x28: not present error reading page in kernel context.
 Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc010734a
  cr2=00000028 error=00000000
- eax=00000024 ebx=00000024 ecx=c01279ec edx=00000000
- esi=00000000 edi=00000001 esp=00009504 ebp=c014cf20
+ eax=00000024 ebx=00000024 ecx=c0152fcc edx=00000000
+ esi=00000000 edi=00000001 esp=00009504 ebp=c0151f20
  cs=0008 ds=0010 es=0010 ss=0000
 Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0107276 0xc010aaef 0xc010aba9 0xc0101745 0xc010191b 0xc010734a 0xc0107928 0xc01095c1 0xc0100d3b.
+Call stack: 0xc0107276 0xc010ab1f 0xc010abd9 0xc0101745 0xc010191b 0xc010734a 0xc0107928 0xc01095c1 0xc0100d3b.
 The `backtrace' program can make call stacks useful.
 Read "Backtraces" in the "Debugging Tools" chapter
 of the Pintos documentation for more information.
-Timer: 97 ticks
-Thread: 0 idle ticks, 58 kernel ticks, 39 user ticks
+Timer: 106 ticks
+Thread: 0 idle ticks, 68 kernel ticks, 38 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 7437 reads, 178 writes
 hd1:0: 85 reads, 0 writes
-Console: 2306 characters output
+Console: 2307 characters output
 Keyboard: 0 keys pressed
 Exception: 2 page faults
 Powering off...

@@ -1,6 +1,6 @@
-Copying tests/userprog/rox-simple into /tmp/7ad66L5nJO.dsk...
-Writing command line to /tmp/klz70Q96F2.dsk...
-qemu -hda /tmp/klz70Q96F2.dsk -hdb /tmp/mzrN6DzDCc.dsk -hdc /tmp/7ad66L5nJO.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/rox-simple into /tmp/yP4ExUaT8b.dsk...
+Writing command line to /tmp/rUmrEzYQW0.dsk...
+qemu -hda /tmp/rUmrEzYQW0.dsk -hdb /tmp/d38EtmH45E.dsk -hdc /tmp/yP4ExUaT8b.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put rox-simple run rox-simple
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -16,17 +16,16 @@ Executing 'rox-simple':
 (rox-simple) begin
 (rox-simple) open "rox-simple"
 (rox-simple) read "rox-simple"
-Kernel PANIC at ../../devices/disk.c:436 in select_sector(): assertion `sec_no < d->capacity' failed.
-Call stack: 0xc0107276 0xc0104cee 0xc01046e3 0xc010c5fe 0xc010bade 0xc010b068 0xc010ada8 0xc0101745 0xc010191b 0x804a0e1 0x80480f5 0x8048173 0x804874c.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
-Timer: 59 ticks
-Thread: 0 idle ticks, 59 kernel ticks, 0 user ticks
+(rox-simple) try to write "rox-simple"
+(rox-simple) try to write "rox-simple": FAILED
+rox-simple: exit(1)
+Execution of 'rox-simple' complete.
+Timer: 60 ticks
+Thread: 0 idle ticks, 59 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 62 reads, 154 writes
+hd0:1: 64 reads, 155 writes
 hd1:0: 73 reads, 0 writes
-Console: 1199 characters output
+Console: 933 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

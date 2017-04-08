@@ -677,7 +677,10 @@ struct process *
 find_process(tid_t pid){
   struct process *p;
   struct list_elem *e;
+  if (list_empty(&process_list))
+    return NULL;
   e = find_processelem(pid);
+
   if (e == list_end(&process_list)){    //there's no pid process in process list
     return NULL;
   }
@@ -706,10 +709,12 @@ struct fd_file *
 find_file(int fd){
   struct fd_file *fd_file;
   struct list_elem *e;
+  if (list_empty(&find_process(thread_current()->tid)->file_list))
+    return NULL;
   e = find_fileelem(fd);
-  if ( e == list_end(&find_process(thread_current()->tid)->file_list)){
+  if ( e == list_end(&find_process(thread_current()->tid)->file_list))
     return NULL;    //no fd there
-  }else
+  else
     fd_file = list_entry(e, struct fd_file, elem);
   return fd_file;
 }
