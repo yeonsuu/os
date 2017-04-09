@@ -1,6 +1,6 @@
-Copying tests/userprog/bad-write into /tmp/PqIgOK34Wn.dsk...
-Writing command line to /tmp/MjCXOXVsk1.dsk...
-qemu -hda /tmp/MjCXOXVsk1.dsk -hdb /tmp/rTvXKGB8YO.dsk -hdc /tmp/PqIgOK34Wn.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/bad-write into /tmp/zFop3CoB2O.dsk...
+Writing command line to /tmp/HLTxt4gv36.dsk...
+qemu -hda /tmp/HLTxt4gv36.dsk -hdb /tmp/N0XAz8Mo1N.dsk -hdc /tmp/zFop3CoB2O.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put bad-write run bad-write
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -14,15 +14,14 @@ Boot complete.
 Putting 'bad-write' into the file system...
 Executing 'bad-write':
 (bad-write) begin
-Page fault at 0: not present error writing page in user context.
 bad-write: exit(-1)
 Execution of 'bad-write' complete.
-Timer: 58 ticks
-Thread: 0 idle ticks, 57 kernel ticks, 1 user ticks
+Timer: 60 ticks
+Thread: 0 idle ticks, 60 kernel ticks, 0 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 61 reads, 154 writes
 hd1:0: 73 reads, 0 writes
-Console: 844 characters output
+Console: 779 characters output
 Keyboard: 0 keys pressed
 Exception: 1 page faults
 Powering off...

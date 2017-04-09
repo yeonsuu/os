@@ -121,7 +121,6 @@ syscall_handler (struct intr_frame *f)
   	sys_close((int)*argv[0]);
   	break;
  }
- 
 }
 
 
@@ -159,7 +158,6 @@ sys_exit(int status)
 //printf("!!!syscall : exit!!!\n");
 
 	set_exitstatus(status);
-  printf("%s: exit(%d)\n", thread_name(), status);
   thread_exit();
 }
 
@@ -224,20 +222,21 @@ sys_remove(const char *file)
 int
 sys_open(const char *file)
 {
-  struct fd_file *fd_and_file;
-  fd_and_file = malloc (sizeof *fd_and_file);
-  int fd;
-  struct file * f;
-  struct process * p;
-  p = find_process(thread_current()->tid);
 
   if(file == NULL)
     sys_exit(-1);
   if(!is_valid_usraddr((void *)file))
     sys_exit(-1);
-
+    
+  int fd;
+  struct file * f;
+  struct process * p;
+  p = find_process(thread_current()->tid);
+  
+  struct fd_file *fd_and_file;
+  fd_and_file = malloc (sizeof *fd_and_file);     //(malloc) free at close
   f = filesys_open (file);
-  //printf("open file length %d\n", file_length(f));
+
   if(f == NULL){
     fd = -1;
   }
@@ -392,6 +391,7 @@ sys_close(int fd)
   else{
     file_close (f);
     list_remove(&find_file(fd)->elem);
+    free(find_file(fd));
   }
 }
 

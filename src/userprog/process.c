@@ -34,13 +34,20 @@ void
 process_init (void)
 {
   list_init(&process_list);
+
   struct process *initial_process;
   initial_process = malloc(sizeof *initial_process);
   initial_process -> pid = thread_current() -> tid;
-  list_push_back(&process_list, &initial_process->elem);
+  initial_process -> is_dead = false;
+  initial_process -> load_success = false;
+  initial_process -> fd_cnt = 2;
   list_init(&initial_process -> file_list);
   list_init(&initial_process -> children_pids);
-  initial_process -> fd_cnt = 2;
+
+  //printf("MALLOC struct process / process pid : %d ", thread_current() -> tid);
+  
+  list_push_back(&process_list, &initial_process->elem);
+
 }
 /* Starts a new thread running a user program loaded from
    FILENAME.  The new thread may be scheduled (and may even exit)
@@ -62,55 +69,61 @@ process_execute (const char *file_name)
   /* Make a copy of FILE_NAME.
      Otherwise there's a race between the caller and load(). */
   fn_copy = palloc_get_page (0);
+
   if (fn_copy == NULL)
     return TID_ERROR;
   strlcpy (fn_copy, file_name, PGSIZE);
-  //printf("fn_copy: %s\n", fn_copy);
+
   char *s;
   s = palloc_get_page (0);
   if (s == NULL)
     return TID_ERROR;
   strlcpy (s, file_name, PGSIZE);
+
   char *t_name;
-  t_name = malloc(100);
   char *save_ptr;
 
   t_name = strtok_r (s, " ", &save_ptr);  
-  //printf("t_name: %s\n", t_name);
 
   /* Create a new thread to execute FILE_NAME. */
   tid = thread_create (t_name, PRI_DEFAULT, start_process, fn_copy);
 
-  //printf("!!!execute!!! tid = %d, child_pid = %d\n", thread_current()->tid, tid);
-
   if (tid == TID_ERROR){
     palloc_free_page (fn_copy); 
+    palloc_free_page (s);
+    free(t_name);
   }
 
   
   else {
     struct process *child;
-    child = malloc(sizeof *child);
+    child = malloc(sizeof *child);      //free when process dies
     child->pid = tid;
     child->parent_pid = thread_current()->tid;
+    child->is_dead = false;
+    child->load_success = false;
     list_init(&child->file_list);
     list_init(&child->children_pids);
     child->fd_cnt = 2;
-    //printf("parent pid : %d child pid :%d\n", thread_current()->tid, child->pid);
     list_push_back(&process_list, &child->elem);
+    //printf("MALLOC struct process / process pid : %d / parent pid : %d \n", child->pid, child->parent_pid);
+
 
     sema_down(&curr_p->sema_pexec);
 
     if(!child->load_success){
       list_remove(&child->elem);
+      //printf("A: MALLOC FREE struct process / process pid : %d / parent pid : %d \n", child->pid, child->parent_pid);
+      free(child);
       tid = -1;
     }
     else{
       struct childpid_elem *child_elem;
-      child_elem = malloc (sizeof *child_elem);
+      child_elem = malloc (sizeof *child_elem);   //free when dies
       child_elem->childpid = tid;
       list_push_back(&curr_p->children_pids, &child_elem->elem);
     }
+    palloc_free_page (s);
   }
   return tid;   
 }
@@ -139,16 +152,12 @@ start_process (void *f_name)
 
   success = load (token, &if_.eip, &if_.esp);
 
-  ////printf("!!!start_process!!!\n");
-
   struct process *curr_p;
   curr_p = find_process(thread_current()->tid);
   curr_p->load_success = success;
-  ////printf("!!!start!!! tid = %d, parent_pid = %d\n", thread_current()->tid, curr_p->parent_pid);
 
   struct process *parent_p;
   parent_p = find_process(curr_p->parent_pid);
-  ////printf("!!!start!!! tid = %d, parent_pid = %d\n", parent_p->child_pid, parent_p->pid);
 
   if(!list_empty(&parent_p -> sema_pexec.waiters))
     sema_up(&parent_p -> sema_pexec);
@@ -157,6 +166,7 @@ start_process (void *f_name)
     palloc_free_page (file_name);
     if(file != NULL)
       file_allow_write(file);
+    file_close(file);
     sys_exit (-1);
   }
 
@@ -206,7 +216,8 @@ start_process (void *f_name)
   *(int *) if_.esp = 0;       
 
   palloc_free_page (file_name);
-
+  
+  free(argv);
 
   /* Start the user process by simulating a return from an
      interrupt, implemented by intr_exit (in
@@ -229,7 +240,7 @@ start_process (void *f_name)
 int
 process_wait (tid_t child_tid) 
 {
-  ASSERT(child_tid != -1);
+  //ASSERT(child_tid != -1);
   struct process *curr_p;
   struct process *child_p;
   curr_p = find_process(thread_current()->tid);
@@ -245,16 +256,19 @@ process_wait (tid_t child_tid)
     if (find_process(child_tid)->is_dead){    //If it was terminated by the kernel 
       int exit_status = get_exitstatus(child_tid);
       list_remove(&find_process(child_tid)->elem);
+      //printf("B: MALLOC FREE struct process / process pid : %d / parent pid : %d \n", child_tid, thread_current()->tid);
+      free(find_process(child_tid));
 
       return exit_status;
     }
     
     else{   //child but not dead -> wait for it exit
-      //if(list_empty(&curr_p->sema_pwait))
-        sema_down(&curr_p->sema_pwait);
+      sema_down(&curr_p->sema_pwait);
       int exit_status = get_exitstatus(child_tid);
 
       list_remove(&find_process(child_tid)->elem);
+      //printf("C: MALLOC FREE struct process / process pid : %d / parent pid : %d \n", child_tid, thread_current()->tid);
+      free(find_process(child_tid));
       return exit_status;
 
     }
@@ -268,6 +282,8 @@ process_exit (void)
 {
   struct thread *curr = thread_current ();
   uint32_t *pd;
+
+
   /* Destroy the current process's page directory and switch back
      to the kernel-only page directory. */
   pd = curr->pagedir;
@@ -283,14 +299,15 @@ process_exit (void)
       curr->pagedir = NULL;
       pagedir_activate (NULL);
       pagedir_destroy (pd);
-    }
-    ////printf("!!!exit!!!\n");
+    
+    //////printf("!!!exit!!!\n");
   struct process *curr_p;
   struct process *parent_p;
   struct process *child_p;
   curr_p = find_process(curr->tid);
   curr_p -> is_dead = true;
   parent_p = find_process(curr_p->parent_pid);
+  printf("%s: exit(%d)\n", thread_name(), curr_p->exit_status);
 
   if(!list_empty(&parent_p->sema_pwait.waiters) )
     sema_up(&parent_p->sema_pwait);
@@ -308,18 +325,46 @@ process_exit (void)
 
       if ((child_p != NULL) && (child_p->is_dead == true)){
         list_remove(&child_p->elem);
+        //printf("D: MALLOC FREE struct process / process pid : %d / parent pid : %d \n", child_p->pid, child_p->parent_pid);
+        free(child_p);
       }
     }
   }
+  
+  struct fd_file * fd_file;
+  while (!list_empty (&curr_p->file_list))
+  {
+    struct list_elem *e = list_pop_front (&curr_p->file_list);
+    fd_file = list_entry(e, struct fd_file, elem);
+    free(fd_file->file);
+    free(fd_file);
+  }
 
+
+  struct childpid_elem * childpid;
+  while (!list_empty (&curr_p->children_pids))
+  {
+    struct list_elem *e = list_pop_front (&curr_p->children_pids);
+    childpid = list_entry(e, struct childpid_elem, elem);
+    free(childpid);
+  }
+
+
+  if(curr_p->exec_file !=NULL){
+      file_close (curr_p->exec_file);   //aaaaaa
+      curr_p->exec_file = NULL;
+  }
   if (parent_p == NULL){
     list_remove(&curr_p->elem); //Do not store the exit code!
+    //printf("E: MALLOC FREE struct process / process pid : %d / parent pid : %d \n", curr_p->pid, curr_p->parent_pid);
+    free(curr_p);
   }
-  else if (parent_p->is_dead == true)
-    list_remove(&curr_p->elem);  
-  
-  if(curr_p->exec_file){
-    file_close (curr_p->exec_file);   //aaaaaa
+  else if (parent_p->is_dead == true){
+    list_remove(&curr_p->elem);
+    //printf("F: MALLOC FREE struct process / process pid : %d / parent pid : %d \n", curr_p->pid, curr_p->parent_pid);
+ 
+    free(curr_p);
+  }
   }
 }
 
@@ -364,11 +409,11 @@ get_exitstatus(tid_t child_tid){
 typedef uint32_t Elf32_Word, Elf32_Addr, Elf32_Off;
 typedef uint16_t Elf32_Half;
 
-/* For use with ELF types in //printf(). */
-#define PE32Wx PRIx32   /* Print Elf32_Word in hexadecimal. */
-#define PE32Ax PRIx32   /* Print Elf32_Addr in hexadecimal. */
-#define PE32Ox PRIx32   /* Print Elf32_Off in hexadecimal. */
-#define PE32Hx PRIx16   /* Print Elf32_Half in hexadecimal. */
+/* For use with ELF types in ////printf(). */
+#define PE32Wx PRIx32   /* //print Elf32_Word in hexadecimal. */
+#define PE32Ax PRIx32   /* //print Elf32_Addr in hexadecimal. */
+#define PE32Ox PRIx32   /* //print Elf32_Off in hexadecimal. */
+#define PE32Hx PRIx16   /* //print Elf32_Half in hexadecimal. */
 
 /* Executable header.  See [ELF1] 1-4 to 1-8.
    This appears at the very beginning of an ELF binary. */

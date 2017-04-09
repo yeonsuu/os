@@ -1,11 +1,11 @@
-Copying tests/userprog/open-missing into /tmp/NSrwZZQPtp.dsk...
-Writing command line to /tmp/HvJxCp4r1L.dsk...
-qemu -hda /tmp/HvJxCp4r1L.dsk -hdb /tmp/rap9e1vfuz.dsk -hdc /tmp/NSrwZZQPtp.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/open-missing into /tmp/62gIHnCsMO.dsk...
+Writing command line to /tmp/ciWYGEKsjC.dsk...
+qemu -hda /tmp/ciWYGEKsjC.dsk -hdb /tmp/IicTfG6sxs.dsk -hdc /tmp/62gIHnCsMO.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put open-missing run open-missing
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
 374 pages available in user pool.
-Calibrating timer...  58,880,000 loops/s.
+Calibrating timer...  65,433,600 loops/s.
 hd0:0: detected 137 sector (68 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 73 sector (36 kB) disk, model "QEMU HARDDISK", serial "QM00003"
@@ -17,8 +17,8 @@ Executing 'open-missing':
 (open-missing) end
 open-missing: exit(0)
 Execution of 'open-missing' complete.
-Timer: 61 ticks
-Thread: 0 idle ticks, 61 kernel ticks, 1 user ticks
+Timer: 65 ticks
+Thread: 0 idle ticks, 64 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 78 reads, 154 writes
 hd1:0: 73 reads, 0 writes

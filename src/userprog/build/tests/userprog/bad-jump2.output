@@ -1,6 +1,6 @@
-Copying tests/userprog/bad-jump2 into /tmp/cd8zExvRtA.dsk...
-Writing command line to /tmp/vS6WKLxsT0.dsk...
-qemu -hda /tmp/vS6WKLxsT0.dsk -hdb /tmp/z3b9Ju1Tmy.dsk -hdc /tmp/cd8zExvRtA.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/bad-jump2 into /tmp/7B9Dd8Iv77.dsk...
+Writing command line to /tmp/fczv9WUYPR.dsk...
+qemu -hda /tmp/fczv9WUYPR.dsk -hdb /tmp/XFVitPcu6U.dsk -hdc /tmp/7B9Dd8Iv77.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put bad-jump2 run bad-jump2
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -14,15 +14,14 @@ Boot complete.
 Putting 'bad-jump2' into the file system...
 Executing 'bad-jump2':
 (bad-jump2) begin
-Page fault at 0xc0000000: rights violation error reading page in user context.
 bad-jump2: exit(-1)
 Execution of 'bad-jump2' complete.
-Timer: 63 ticks
-Thread: 0 idle ticks, 62 kernel ticks, 1 user ticks
+Timer: 60 ticks
+Thread: 0 idle ticks, 60 kernel ticks, 0 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 61 reads, 154 writes
 hd1:0: 73 reads, 0 writes
-Console: 858 characters output
+Console: 779 characters output
 Keyboard: 0 keys pressed
 Exception: 1 page faults
 Powering off...
