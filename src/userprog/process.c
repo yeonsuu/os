@@ -57,73 +57,70 @@ tid_t
 process_execute (const char *file_name) 
 {
   char *fn_copy;
+  char *file_name_copy;
+
   tid_t tid;
 
-  //(0406 new)
   struct process *curr_p;
   curr_p = find_process(thread_current()->tid);
   sema_init(&curr_p->sema_pexec, 0);
   sema_init(&curr_p->sema_pwait, 0);
 
-
   /* Make a copy of FILE_NAME.
      Otherwise there's a race between the caller and load(). */
   fn_copy = palloc_get_page (0);
-
   if (fn_copy == NULL)
     return TID_ERROR;
   strlcpy (fn_copy, file_name, PGSIZE);
 
-  char *s;
-  s = palloc_get_page (0);
-  if (s == NULL)
+  file_name_copy = palloc_get_page (0);
+  if (file_name_copy == NULL)
     return TID_ERROR;
-  strlcpy (s, file_name, PGSIZE);
+  strlcpy (file_name_copy, file_name, PGSIZE);
 
+  //1. filename arg1 arg2 .. -> filename
   char *t_name;
   char *save_ptr;
-
-  t_name = strtok_r (s, " ", &save_ptr);  
+  t_name = strtok_r (file_name_copy, " ", &save_ptr);  
 
   /* Create a new thread to execute FILE_NAME. */
   tid = thread_create (t_name, PRI_DEFAULT, start_process, fn_copy);
-
   if (tid == TID_ERROR){
     palloc_free_page (fn_copy); 
-    palloc_free_page (s);
+    palloc_free_page (file_name_copy);
     free(t_name);
   }
-
-  
-  else {
+  //2. If thread_create(child) success -> add to process_list
+  else{
     struct process *child;
-    child = malloc(sizeof *child);      //free when process dies
+    child = malloc(sizeof *child);   
     child->pid = tid;
     child->parent_pid = thread_current()->tid;
+    list_init(&child->children_pids);
     child->is_dead = false;
     child->load_success = false;
     list_init(&child->file_list);
-    list_init(&child->children_pids);
     child->fd_cnt = 2;
+    
     list_push_back(&process_list, &child->elem);
-    //printf("MALLOC struct process / process pid : %d / parent pid : %d \n", child->pid, child->parent_pid);
 
-
+    //3. Wait until child exec
     sema_down(&curr_p->sema_pexec);
 
+    //4. If load(child) !success -> remove from process_list
     if(!child->load_success){
       list_remove(&child->elem);
-      //printf("A: MALLOC FREE struct process / process pid : %d / parent pid : %d \n", child->pid, child->parent_pid);
       free(child);
       tid = -1;
     }
+    //5. If load(child) success -> push it to curr_p's children_pids list
     else{
       struct childpid_elem *child_elem;
-      child_elem = malloc (sizeof *child_elem);   //free when dies
+      child_elem = malloc (sizeof *child_elem); 
       child_elem->childpid = tid;
       list_push_back(&curr_p->children_pids, &child_elem->elem);
     }
-    palloc_free_page (s);
+    palloc_free_page (file_name_copy);
   }
   return tid;   
 }
@@ -136,22 +133,22 @@ start_process (void *f_name)
   char *file_name = f_name;
   struct intr_frame if_;
   bool success;
-
-  /* Initialize interrupt frame and load executable. */
-  char *s = f_name;
   char *token, *save_ptr;
-  token = strtok_r (s, " ", &save_ptr);  
-  
+  token = strtok_r (file_name, " ", &save_ptr); 
+
+  /* Initialize interrupt frame and load executable. */  
   memset (&if_, 0, sizeof if_);
   if_.gs = if_.fs = if_.es = if_.ds = if_.ss = SEL_UDSEG;
   if_.cs = SEL_UCSEG;
   if_.eflags = FLAG_IF | FLAG_MBS;
 
+  //1. File_deny_write while this file's process is executing
   struct file* file = filesys_open(token);
   if (file != NULL) file_deny_write(file);
 
   success = load (token, &if_.eip, &if_.esp);
 
+  //2. Hand over to parent process that whether child success or not 
   struct process *curr_p;
   curr_p = find_process(thread_current()->tid);
   curr_p->load_success = success;
@@ -159,25 +156,25 @@ start_process (void *f_name)
   struct process *parent_p;
   parent_p = find_process(curr_p->parent_pid);
 
+  //3. If parent call sema_down -> sema_up
   if(!list_empty(&parent_p -> sema_pexec.waiters))
     sema_up(&parent_p -> sema_pexec);
   
+  //4. If load is not success : FREE & sys_exit(-1)
   if (!success) {
     palloc_free_page (file_name);
-    if(file != NULL)
-      file_allow_write(file);
     file_close(file);
     sys_exit (-1);
   }
-
+  //5. success : Add this file to process's exec_file
   else{
     curr_p->exec_file = file;
   }
+
   /* Argument Passing */
   char **argv;
   int argc = 0;
   argv = (char **) malloc(100 * sizeof(char *));
-
 
   //push argv[n][...]
   while(token != NULL){
@@ -215,8 +212,8 @@ start_process (void *f_name)
   if_.esp -= 4;
   *(int *) if_.esp = 0;       
 
+  //FINAL : free everything
   palloc_free_page (file_name);
-  
   free(argv);
 
   /* Start the user process by simulating a return from an
@@ -240,40 +237,35 @@ start_process (void *f_name)
 int
 process_wait (tid_t child_tid) 
 {
-  //ASSERT(child_tid != -1);
   struct process *curr_p;
   struct process *child_p;
   curr_p = find_process(thread_current()->tid);
 
-  if (find_process(child_tid) == NULL){   //there's no child_tid in process list
+  //CASE 0: Unvalid child process pid
+  if (find_process(child_tid) == NULL){
     return -1;
   }
-
-  if (curr_p->pid != find_process(child_tid)->parent_pid){//if child_tid is not a child of current process
+  //CASE 0: This is not a child of current process 
+  if (curr_p->pid != find_process(child_tid)->parent_pid){
     return -1;
   }
-  else{   //if child
-    if (find_process(child_tid)->is_dead){    //If it was terminated by the kernel 
+  else{
+    //CASE 1: child is already dead
+    if (find_process(child_tid)->is_dead){
       int exit_status = get_exitstatus(child_tid);
       list_remove(&find_process(child_tid)->elem);
-      //printf("B: MALLOC FREE struct process / process pid : %d / parent pid : %d \n", child_tid, thread_current()->tid);
       free(find_process(child_tid));
-
       return exit_status;
     }
-    
-    else{   //child but not dead -> wait for it exit
+    //CASE 2: child is not dead -> wait for child to exit
+    else{
       sema_down(&curr_p->sema_pwait);
       int exit_status = get_exitstatus(child_tid);
-
       list_remove(&find_process(child_tid)->elem);
-      //printf("C: MALLOC FREE struct process / process pid : %d / parent pid : %d \n", child_tid, thread_current()->tid);
       free(find_process(child_tid));
       return exit_status;
-
     }
-  }
-  
+  } 
 }
 
 /* Free the current process's resources. */
@@ -283,88 +275,89 @@ process_exit (void)
   struct thread *curr = thread_current ();
   uint32_t *pd;
 
-
   /* Destroy the current process's page directory and switch back
      to the kernel-only page directory. */
   pd = curr->pagedir;
   if (pd != NULL) 
-    {
-      /* Correct ordering here is crucial.  We must set
-         cur->pagedir to NULL before switching page directories,
-         so that a timer interrupt can't switch back to the
-         process page directory.  We must activate the base page
-         directory before destroying the process's page
-         directory, or our active page directory will be one
-         that's been freed (and cleared). */
-      curr->pagedir = NULL;
-      pagedir_activate (NULL);
-      pagedir_destroy (pd);
-    
-    //////printf("!!!exit!!!\n");
-  struct process *curr_p;
-  struct process *parent_p;
-  struct process *child_p;
-  curr_p = find_process(curr->tid);
-  curr_p -> is_dead = true;
-  parent_p = find_process(curr_p->parent_pid);
-  printf("%s: exit(%d)\n", thread_name(), curr_p->exit_status);
+  {
+    /* Correct ordering here is crucial.  We must set
+       cur->pagedir to NULL before switching page directories,
+       so that a timer interrupt can't switch back to the
+       process page directory.  We must activate the base page
+       directory before destroying the process's page
+       directory, or our active page directory will be one
+       that's been freed (and cleared). */
+    curr->pagedir = NULL;
+    pagedir_activate (NULL);
+    pagedir_destroy (pd);
+  
+    struct process *curr_p;
+    struct process *parent_p;
+    struct process *child_p;
+    curr_p = find_process(curr->tid);
+    parent_p = find_process(curr_p->parent_pid);
 
-  if(!list_empty(&parent_p->sema_pwait.waiters) )
-    sema_up(&parent_p->sema_pwait);
+    curr_p -> is_dead = true;
+    printf("%s: exit(%d)\n", thread_name(), curr_p->exit_status);
 
-  if (!list_empty(&curr_p -> children_pids)){
-    struct list_elem *e;
-    struct childpid_elem *child_elem;
-    e = list_begin(&curr_p -> children_pids);
+    //CASE 0: NO Parent
+    if (parent_p == NULL){
+      list_remove(&curr_p->elem);
+      free(curr_p);
+    }
+    //CASE 1: Parent already dead
+    else if (parent_p->is_dead == true){
+      list_remove(&curr_p->elem);
+      free(curr_p);
+    }    
 
-    while(e != list_end(&curr_p -> children_pids))
-    {
-      child_elem = list_entry(e, struct childpid_elem, elem);
-      child_p = find_process(child_elem->childpid);
-      e = list_next(e);
+    //CASE 2: parent is waiting for exit
+    if(!list_empty(&parent_p->sema_pwait.waiters) )
+      sema_up(&parent_p->sema_pwait);
 
-      if ((child_p != NULL) && (child_p->is_dead == true)){
-        list_remove(&child_p->elem);
-        //printf("D: MALLOC FREE struct process / process pid : %d / parent pid : %d \n", child_p->pid, child_p->parent_pid);
-        free(child_p);
+
+    //FREE: FREE (is_dead)ychildren's process structure & remove from process_list
+    if (!list_empty(&curr_p -> children_pids)){
+      struct list_elem *e;
+      struct childpid_elem *child_elem;
+      
+      e = list_begin(&curr_p -> children_pids);
+      while(e != list_end(&curr_p -> children_pids))
+      {
+        child_elem = list_entry(e, struct childpid_elem, elem);
+        child_p = find_process(child_elem->childpid);
+        e = list_next(e);
+
+        if ((child_p != NULL) && (child_p->is_dead == true)){
+          list_remove(&child_p->elem);
+          free(child_p);
+        }
       }
     }
-  }
-  
-  struct fd_file * fd_file;
-  while (!list_empty (&curr_p->file_list))
-  {
-    struct list_elem *e = list_pop_front (&curr_p->file_list);
-    fd_file = list_entry(e, struct fd_file, elem);
-    free(fd_file->file);
-    free(fd_file);
-  }
+    //FREE: FREE 'file_liset'
+    struct fd_file * fd_file;
+    while (!list_empty (&curr_p->file_list))
+    {
+      struct list_elem *e = list_pop_front (&curr_p->file_list);
+      fd_file = list_entry(e, struct fd_file, elem);
+      free(fd_file->file);
+      free(fd_file);
+    }
 
+    //FREE: FREE 'childpid_elem'
+    struct childpid_elem * childpid;
+    while (!list_empty (&curr_p->children_pids))
+    {
+      struct list_elem *e = list_pop_front (&curr_p->children_pids);
+      childpid = list_entry(e, struct childpid_elem, elem);
+      free(childpid);
+    }
 
-  struct childpid_elem * childpid;
-  while (!list_empty (&curr_p->children_pids))
-  {
-    struct list_elem *e = list_pop_front (&curr_p->children_pids);
-    childpid = list_entry(e, struct childpid_elem, elem);
-    free(childpid);
-  }
-
-
-  if(curr_p->exec_file !=NULL){
-      file_close (curr_p->exec_file);   //aaaaaa
-      curr_p->exec_file = NULL;
-  }
-  if (parent_p == NULL){
-    list_remove(&curr_p->elem); //Do not store the exit code!
-    //printf("E: MALLOC FREE struct process / process pid : %d / parent pid : %d \n", curr_p->pid, curr_p->parent_pid);
-    free(curr_p);
-  }
-  else if (parent_p->is_dead == true){
-    list_remove(&curr_p->elem);
-    //printf("F: MALLOC FREE struct process / process pid : %d / parent pid : %d \n", curr_p->pid, curr_p->parent_pid);
- 
-    free(curr_p);
-  }
+    //FREE: FREE 'exec_file'
+    if(curr_p->exec_file !=NULL){
+        file_close (curr_p->exec_file);
+        curr_p->exec_file = NULL;
+    }
   }
 }
 
@@ -789,11 +782,12 @@ find_file(int fd){
     return NULL;
   e = find_fileelem(fd);
   if ( e == list_end(&find_process(thread_current()->tid)->file_list))
-    return NULL;    //no fd there
+    return NULL;    
   else
     fd_file = list_entry(e, struct fd_file, elem);
   return fd_file;
 }
+
 bool
 is_valid_usraddr (void *addr){
   struct thread *t = thread_current();
@@ -807,8 +801,6 @@ is_valid_usraddr (void *addr){
   if (pagedir_get_page (t->pagedir, addr) == NULL){
     return false;
   }
-  if (!is_user_vaddr(addr))
-    return false;
   else 
     return true;
   
