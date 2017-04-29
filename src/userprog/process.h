@@ -26,6 +26,7 @@ struct process
 {
 	tid_t pid;
 	tid_t parent_pid;
+	struct thread * thread;
 	struct list children_pids;
 
 	struct semaphore sema_pexec;	/* 이 process가 exec을 call 했으면 child가 load 완료할때 까지 기다림 */

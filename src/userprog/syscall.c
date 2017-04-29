@@ -129,7 +129,7 @@ int
 sys_exec(const char *cmd_line)
 {
   if(!is_valid_usraddr((void *)cmd_line))
-    return -1;
+    sys_exit(-1);
   else
     return process_execute(cmd_line);
 }
@@ -178,6 +178,7 @@ sys_open(const char *file)
   if(f == NULL){
     fd = -1;
   }
+  
   //ADD file&fd to current process's file_list
   else{
     fd = p->fd_cnt;

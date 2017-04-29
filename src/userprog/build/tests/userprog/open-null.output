@@ -1,6 +1,6 @@
-Copying tests/userprog/open-null into /tmp/PTcCmF1bHh.dsk...
-Writing command line to /tmp/5xk4ptb0in.dsk...
-qemu -hda /tmp/5xk4ptb0in.dsk -hdb /tmp/MVqXSgZA3Y.dsk -hdc /tmp/PTcCmF1bHh.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/open-null into /tmp/nPYivAxIaY.dsk...
+Writing command line to /tmp/RIRzUc6zOf.dsk...
+qemu -hda /tmp/RIRzUc6zOf.dsk -hdb /tmp/QXZFijSdkB.dsk -hdc /tmp/nPYivAxIaY.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put open-null run open-null
 Pintos booting with 4,096 kB RAM...
 374 pages available in kernel pool.
@@ -17,7 +17,7 @@ Executing 'open-null':
 open-null: exit(-1)
 Execution of 'open-null' complete.
 Timer: 59 ticks
-Thread: 0 idle ticks, 58 kernel ticks, 1 user ticks
+Thread: 0 idle ticks, 59 kernel ticks, 0 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 60 reads, 154 writes
 hd1:0: 73 reads, 0 writes

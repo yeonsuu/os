@@ -5,6 +5,7 @@
 #include "threads/interrupt.h"
 #include "threads/thread.h"
 #include "userprog/process.h"
+#include "threads/vaddr.h"
 
 /* Number of page faults processed. */
 static long long page_fault_cnt;
@@ -123,6 +124,22 @@ kill (struct intr_frame *f)
 static void
 page_fault (struct intr_frame *f) 
 {
+
+  /*
+  1. page fault가 난 page를 supplemental page table에 위치
+  memory reference가 valid 이면 -> supplemental page table entry 를 이용하여 
+  "file system" 혹은 "swap slot" 에 있을, 혹은 그냥 "all-zero page"를 locate
+  (if you implement sharing, page's data 는 이미 page frame에 있으나 page table에 없을 수 있다)
+
+  2. page를 저장할 frame을 가져온다. (4.1.5 Managing Frame Table)
+  (if you implement sharing, 우리가 필요한 data는 이미 frame에 있을 수 있다 -> you must be able to locate that frame)
+
+  3. Fetch data into frame <- file system에서 가져오거나, swap하거나, zeroing it ...
+  (if you implement sharing, page you need는 이미 frame에 있을 수 있다 -> no action is necessary)
+
+  4. fault가 발생한 page table entry의 fulting virtul address-> physical page 이도록 만들어라 (userprog/pagedir.c) 
+  */
+
   bool not_present;  /* True: not-present page, false: writing r/o page. */
   bool write;        /* True: access was write, false: access was read. */
   bool user;         /* True: access by user, false: access by kernel. */
@@ -152,11 +169,22 @@ page_fault (struct intr_frame *f)
   /* To implement virtual memory, delete the rest of the function
      body, and replace it with code that brings in the page to
      which fault_addr refers. */
-  if(!is_valid_usraddr(fault_addr)){
-      find_process(thread_current() -> tid)->exit_status = -1;
-      thread_exit();  
+  if(!is_valid_usraddr(fault_addr))
+  {
+    find_process(thread_current() -> tid)->exit_status = -1;
+    thread_exit();  
   }
+  else
+  {
+    // (new) project 3 - when mapping is not present, find where the page is
+    
+    if(not_present){
+      find_s_pte( pg_round_up (fault_addr), thread_current()->tid );
+    }
 
+    //else if (stackgrowth)  
+    
+  }
   printf ("Page fault at %p: %s error %s page in %s context.\n",
           fault_addr,
           not_present ? "not present" : "rights violation",

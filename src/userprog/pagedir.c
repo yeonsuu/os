@@ -5,6 +5,9 @@
 #include "threads/init.h"
 #include "threads/pte.h"
 #include "threads/palloc.h"
+#include "threads/thread.h"
+#include "vm/s-pagetable.h"
+
 
 static uint32_t *active_pd (void);
 static void invalidate_pagedir (uint32_t *);
@@ -106,12 +109,15 @@ pagedir_set_page (uint32_t *pd, void *upage, void *kpage, bool writable)
   ASSERT (vtop (kpage) >> PTSHIFT < ram_pages);
   ASSERT (pd != base_page_dir);
 
-  pte = lookup_page (pd, upage, true);
+  pte = lookup_page (pd, upage, true);    // find or create(if successful) a pte
 
   if (pte != NULL) 
     {
       ASSERT ((*pte & PTE_P) == 0);
       *pte = pte_create_user (kpage, writable);
+
+      // (new) project3 - make mapping void* va & void * pa
+      s_pte_insert(upage, pte, thread_current()->tid); 
       return true;
     }
   else
@@ -152,6 +158,8 @@ pagedir_clear_page (uint32_t *pd, void *upage)
   if (pte != NULL && (*pte & PTE_P) != 0)
     {
       *pte &= ~PTE_P;
+      // (new) project3 - delete mapping void* va & void * pa
+      s_pte_clear(upage, thread_current()->tid); 
       invalidate_pagedir (pd);
     }
 }

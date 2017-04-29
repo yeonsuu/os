@@ -41,6 +41,7 @@ process_init (void)
   initial_process -> is_dead = false;
   initial_process -> load_success = false;
   initial_process -> fd_cnt = 2;
+  initial_process -> thread = thread_current();
   list_init(&initial_process -> file_list);
   list_init(&initial_process -> children_pids);
 
@@ -151,14 +152,17 @@ start_process (void *f_name)
   //2. Hand over to parent process that whether child success or not 
   struct process *curr_p;
   curr_p = find_process(thread_current()->tid);
-  curr_p->load_success = success;
+  curr_p-> load_success = success;
+  curr_p-> thread = thread_current();
 
   struct process *parent_p;
   parent_p = find_process(curr_p->parent_pid);
 
   //3. If parent call sema_down -> sema_up
   if(!list_empty(&parent_p -> sema_pexec.waiters))
+  {
     sema_up(&parent_p -> sema_pexec);
+  }
   
   //4. If load is not success : FREE & sys_exit(-1)
   if (!success) {
@@ -166,10 +170,13 @@ start_process (void *f_name)
     file_close(file);
     sys_exit (-1);
   }
+
+
   //5. success : Add this file to process's exec_file
   else{
     curr_p->exec_file = file;
   }
+  //thread_yield();
 
   /* Argument Passing */
   char **argv;
@@ -215,7 +222,6 @@ start_process (void *f_name)
   //FINAL : free everything
   palloc_free_page (file_name);
   free(argv);
-
   /* Start the user process by simulating a return from an
      interrupt, implemented by intr_exit (in
      threads/intr-stubs.S).  Because intr_exit takes all of its

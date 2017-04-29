@@ -20,6 +20,9 @@
 #include "threads/palloc.h"
 #include "threads/pte.h"
 #include "threads/thread.h"
+#include "vm/swap.h"
+#include "vm/s-pagetable.h"
+#include "vm/frame.h"
 #ifdef USERPROG
 #include "userprog/process.h"
 #include "userprog/exception.h"
@@ -87,6 +90,7 @@ main (void)
   palloc_init ();
   malloc_init ();
   paging_init ();
+  
 
   /* Segmentation. */
 #ifdef USERPROG
@@ -100,6 +104,7 @@ main (void)
   kbd_init ();
   input_init ();
 #ifdef USERPROG
+  process_init();
   exception_init ();
   syscall_init ();
 #endif
@@ -114,7 +119,9 @@ main (void)
   disk_init ();
   filesys_init (format_filesys);
 #endif
-
+  swap_init ();
+  frametable_init();
+  init_s_page_table();
   printf ("Boot complete.\n");
   
   /* Run actions specified on kernel command line. */

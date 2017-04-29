@@ -269,8 +269,10 @@ strtok_r (char *s, const char *delimiters, char **save_ptr)
       *s = '\0';
       *save_ptr = s + 1;
     }
-  else 
+  else{
     *save_ptr = s;
+    
+  }
   return token;
 }
 

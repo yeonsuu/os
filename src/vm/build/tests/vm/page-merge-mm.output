@@ -1,0 +1,30 @@
+Copying tests/vm/page-merge-mm into /tmp/lYdRogDPCo.dsk...
+Copying tests/vm/child-qsort-mm into /tmp/lYdRogDPCo.dsk...
+Writing command line to /tmp/IHhTCHjU92.dsk...
+qemu -hda /tmp/IHhTCHjU92.dsk -hdb /tmp/3n4Fa01SEZ.dsk -hdc /tmp/lYdRogDPCo.dsk -hdd /tmp/LV1UT2IdiG.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put page-merge-mm put child-qsort-mm run page-merge-mm
+Pintos booting with 4,096 kB RAM...
+374 pages available in kernel pool.
+373 pages available in user pool.
+Calibrating timer...  78,540,800 loops/s.
+hd0:0: detected 145 sector (72 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 160 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+hd1:1: detected 8,064 sector (3 MB) disk, model "QEMU HARDDISK", serial "QM00004"
+Formatting file system...done.
+Boot complete.
+Putting 'page-merge-mm' into the file system...
+Putting 'child-qsort-mm' into the file system...
+Executing 'page-merge-mm':
+page-merge-mm: exit(-1)
+Execution of 'page-merge-mm' complete.
+Timer: 68 ticks
+Thread: 0 idle ticks, 65 kernel ticks, 3 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 89 reads, 330 writes
+hd1:0: 160 reads, 0 writes
+hd1:1: 0 reads, 0 writes
+Console: 962 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...

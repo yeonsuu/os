@@ -8,8 +8,12 @@ threads/init.o: ../../threads/init.c ../../threads/init.h \
   ../../threads/interrupt.h ../../threads/io.h ../../threads/loader.h \
   ../../threads/malloc.h ../../threads/palloc.h ../../threads/pte.h \
   ../../threads/vaddr.h ../../threads/thread.h ../../lib/kernel/list.h \
-  ../../userprog/process.h ../../threads/thread.h \
+  ../../vm/swap.h ../../lib/kernel/hash.h ../../lib/kernel/list.h \
+  ../../threads/synch.h ../../threads/palloc.h ../../threads/malloc.h \
+  ../../threads/thread.h ../../userprog/pagedir.h \
+  ../../userprog/process.h ../../threads/thread.h ../../threads/synch.h \
+  ../../devices/disk.h ../../lib/inttypes.h ../../vm/s-pagetable.h \
+  ../../userprog/syscall.h ../../vm/frame.h ../../userprog/process.h \
   ../../userprog/exception.h ../../userprog/gdt.h ../../threads/loader.h \
   ../../userprog/syscall.h ../../userprog/tss.h ../../devices/disk.h \
-  ../../lib/inttypes.h ../../filesys/filesys.h ../../filesys/off_t.h \
-  ../../filesys/fsutil.h
+  ../../filesys/filesys.h ../../filesys/off_t.h ../../filesys/fsutil.h
