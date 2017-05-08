@@ -1,6 +1,9 @@
 #include "userprog/process.h"
+<<<<<<< HEAD
 #include "userprog/syscall.h"
 
+=======
+>>>>>>> 3ca52377996b41e26c8a9bcc467d268de8b69b9c
 #include <debug.h>
 #include <inttypes.h>
 #include <round.h>
@@ -26,11 +29,18 @@
 static thread_func start_process NO_RETURN;
 static bool load (const char *cmdline, void (**eip) (void), void **esp);
 
+<<<<<<< HEAD
 struct semaphore sema_pexit;
 struct semaphore sema_pexec;
 int exit_status;
 bool exec_success = true;
 bool isDead = false;
+=======
+struct semaphore sema_pwait;
+struct semaphore sema_pexec;
+
+bool exec_success;
+>>>>>>> 3ca52377996b41e26c8a9bcc467d268de8b69b9c
 //sema_init(sema_pwait, 0);
 /* Starts a new thread running a user program loaded from
    FILENAME.  The new thread may be scheduled (and may even exit)
@@ -41,9 +51,13 @@ process_execute (const char *file_name)
 {
   char *fn_copy;
   tid_t tid;
+<<<<<<< HEAD
   sema_init(&sema_pexec, 0);
   sema_init(&sema_pexit, 0);
 
+=======
+  //sema_init(&sema_pexec, 0);
+>>>>>>> 3ca52377996b41e26c8a9bcc467d268de8b69b9c
   /* Make a copy of FILE_NAME.
      Otherwise there's a race between the caller and load(). */
   fn_copy = palloc_get_page (0);
@@ -61,6 +75,7 @@ process_execute (const char *file_name)
 
   if (tid == TID_ERROR)
     palloc_free_page (fn_copy); 
+<<<<<<< HEAD
   //printf("!!!execute!!!\n");
   
   sema_down(&sema_pexec);
@@ -68,6 +83,12 @@ process_execute (const char *file_name)
     tid = -1;
   //printf("!!!sema_pexec up !!!\n");
 
+=======
+  
+  //sema_down(&sema_pwait);
+  //if (!exec_success)
+  //  tid = -1;
+>>>>>>> 3ca52377996b41e26c8a9bcc467d268de8b69b9c
   return tid;
 }
 
@@ -90,6 +111,7 @@ start_process (void *f_name)
   if_.cs = SEL_UCSEG;
   if_.eflags = FLAG_IF | FLAG_MBS;
   success = load (token, &if_.eip, &if_.esp);
+<<<<<<< HEAD
   //printf("!!!start_process!!!\n");
 
 
@@ -101,6 +123,15 @@ start_process (void *f_name)
   if (!success) {
     palloc_free_page (file_name);
     sys_exit (-1);
+=======
+  
+  exec_success = success;
+  //sema_up(&sema_pwait);
+  /* If load failed, quit. */
+  if (!success) {
+    palloc_free_page (file_name);
+    thread_exit ();
+>>>>>>> 3ca52377996b41e26c8a9bcc467d268de8b69b9c
 
   }
 
@@ -124,7 +155,11 @@ start_process (void *f_name)
 
   //push argv[argc]
   if_.esp -= 4;
+<<<<<<< HEAD
   *(int *)if_.esp = 0;
+=======
+  *(int *)if_.esp = 0;        //*esp 자리에 0 넣기    //NULL pointer sentinel
+>>>>>>> 3ca52377996b41e26c8a9bcc467d268de8b69b9c
   
   //push argv[n]
   int i;
@@ -164,16 +199,26 @@ start_process (void *f_name)
    child of the calling process, or if process_wait() has already
    been successfully called for the given TID, returns -1
    immediately, without waiting.
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3ca52377996b41e26c8a9bcc467d268de8b69b9c
    This function will be implemented in problem 2-2.  For now, it
    does nothing. */
 int
 process_wait (tid_t child_tid UNUSED) 
 {
+<<<<<<< HEAD
   //printf("!!!wait!!!\n");
   if(!isDead)
     sema_down(&sema_pexit);  
   
   return get_exitstatus(child_tid);
+=======
+  sema_init(&sema_pwait, 0);
+  sema_down(&sema_pwait);       
+  return -1;
+>>>>>>> 3ca52377996b41e26c8a9bcc467d268de8b69b9c
 }
 
 /* Free the current process's resources. */
@@ -198,12 +243,16 @@ process_exit (void)
       pagedir_activate (NULL);
       pagedir_destroy (pd);
     }
+<<<<<<< HEAD
     //printf("!!!exit!!!\n");
   isDead = true;
   if(!list_empty(&sema_pexit.waiters) )
     sema_up(&sema_pexit);
 
 
+=======
+  sema_up(&sema_pwait);
+>>>>>>> 3ca52377996b41e26c8a9bcc467d268de8b69b9c
 }
 
 /* Sets up the CPU for running user code in the current
@@ -221,6 +270,7 @@ process_activate (void)
      interrupts. */
   tss_update ();
 }
+<<<<<<< HEAD
 
 void
 set_exitstatus(int status){
@@ -237,6 +287,8 @@ get_exitstatus(tid_t child_tid UNUSED){
 
 
 
+=======
+>>>>>>> 3ca52377996b41e26c8a9bcc467d268de8b69b9c
 
 /* We load ELF binaries.  The following definitions are taken
    from the ELF specification, [ELF1], more-or-less verbatim.  */
@@ -476,11 +528,23 @@ validate_segment (const struct Elf32_Phdr *phdr, struct file *file)
 /* Loads a segment starting at offset OFS in FILE at address
    UPAGE.  In total, READ_BYTES + ZERO_BYTES bytes of virtual
    memory are initialized, as follows:
+<<<<<<< HEAD
         - READ_BYTES bytes at UPAGE must be read from FILE
           starting at offset OFS.
         - ZERO_BYTES bytes at UPAGE + READ_BYTES must be zeroed.
    The pages initialized by this function must be writable by the
    user process if WRITABLE is true, read-only otherwise.
+=======
+
+        - READ_BYTES bytes at UPAGE must be read from FILE
+          starting at offset OFS.
+
+        - ZERO_BYTES bytes at UPAGE + READ_BYTES must be zeroed.
+
+   The pages initialized by this function must be writable by the
+   user process if WRITABLE is true, read-only otherwise.
+
+>>>>>>> 3ca52377996b41e26c8a9bcc467d268de8b69b9c
    Return true if successful, false if a memory allocation error
    or disk read error occurs. */
 static bool
@@ -590,4 +654,7 @@ is_valid_usraddr (void *addr){
     return true;
   
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3ca52377996b41e26c8a9bcc467d268de8b69b9c
