@@ -5,6 +5,9 @@
 #include "threads/init.h"
 #include "threads/pte.h"
 #include "threads/palloc.h"
+#include "threads/thread.h"
+#include "vm/s-pagetable.h"
+#include "vm/frame.h"
 
 static uint32_t *active_pd (void);
 static void invalidate_pagedir (uint32_t *);
@@ -96,26 +99,34 @@ lookup_page (uint32_t *pd, const void *vaddr, bool create)
    Returns true if successful, false if memory allocation
    failed. */
 bool
-pagedir_set_page (uint32_t *pd, void *upage, void *kpage, bool writable)
+pagedir_set_page (uint32_t *pd, void *upage, void *kpage, bool writable, int mmap_id)
 {
+  //printf("pagedir_set_page\n");
   uint32_t *pte;
 
   ASSERT (pg_ofs (upage) == 0);
   ASSERT (pg_ofs (kpage) == 0);
   ASSERT (is_user_vaddr (upage));
+  ASSERT (is_kernel_vaddr (kpage));
   ASSERT (vtop (kpage) >> PTSHIFT < ram_pages);
   ASSERT (pd != base_page_dir);
-
-  pte = lookup_page (pd, upage, true);
+  //ASSERT(palloc_get_page(PAL_USER) !=NULL);
+  pte = lookup_page (pd, upage, true);    // find or create(if successful) a pte
 
   if (pte != NULL) 
     {
       ASSERT ((*pte & PTE_P) == 0);
       *pte = pte_create_user (kpage, writable);
+      // (new) project3 - make mapping void* va & void * pa
+      //printf("pagedir paddr %08x\n", (void*)(((uint32_t)*pte)&PTE_ADDR));
+      s_pte_insert(upage, (uint32_t*)(((uint32_t)*pte)&PTE_ADDR), thread_current()->tid, mmap_id); 
       return true;
     }
-  else
+  else{
+
+    ASSERT(0);
     return false;
+  }
 }
 
 /* Looks up the physical address that corresponds to user virtual
@@ -141,8 +152,9 @@ pagedir_get_page (uint32_t *pd, const void *uaddr)
    bits in the page table entry are preserved.
    UPAGE need not be mapped. */
 void
-pagedir_clear_page (uint32_t *pd, void *upage) 
+pagedir_clear_page (uint32_t *pd, void *upage, tid_t pid) 
 {
+  //printf("pagedir_clear_page\n");
   uint32_t *pte;
 
   ASSERT (pg_ofs (upage) == 0);
@@ -152,6 +164,7 @@ pagedir_clear_page (uint32_t *pd, void *upage)
   if (pte != NULL && (*pte & PTE_P) != 0)
     {
       *pte &= ~PTE_P;
+      // (new) project3 - delete mapping void* va & void * pa
       invalidate_pagedir (pd);
     }
 }
@@ -183,6 +196,13 @@ pagedir_set_dirty (uint32_t *pd, const void *vpage, bool dirty)
           invalidate_pagedir (pd);
         }
     }
+}
+
+bool
+pagedir_is_writable (uint32_t *pd, const void *vpage) 
+{
+  uint32_t *pte = lookup_page (pd, vpage, false);
+  return pte != NULL && (*pte & PTE_W) != 0;
 }
 
 /* Returns true if the PTE for virtual page VPAGE in PD has been

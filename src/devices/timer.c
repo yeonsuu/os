@@ -3,7 +3,6 @@
 #include <inttypes.h>
 #include <round.h>
 #include <stdio.h>
-
 #include "threads/interrupt.h"
 #include "threads/io.h"
 #include "threads/synch.h"
@@ -20,7 +19,7 @@
 
 /* Number of timer ticks since OS booted. */
 static int64_t ticks;
-static struct list wait_list;
+
 /* Number of loops per timer tick.
    Initialized by timer_calibrate(). */
 static unsigned loops_per_tick;
@@ -40,7 +39,6 @@ timer_init (void)
      nearest. */
   uint16_t count = (1193180 + TIMER_FREQ / 2) / TIMER_FREQ;
 
-  list_init (&wait_list);
   outb (0x43, 0x34);    /* CW: counter 0, LSB then MSB, mode 2, binary. */
   outb (0x40, count & 0xff);
   outb (0x40, count >> 8);
@@ -96,26 +94,13 @@ timer_elapsed (int64_t then)
 
 /* Suspends execution for approximately TICKS timer ticks. */
 void
-timer_sleep (int64_t sleep_time) 
+timer_sleep (int64_t ticks) 
 {
   int64_t start = timer_ticks ();
 
   ASSERT (intr_get_level () == INTR_ON);
-  struct thread *curr = thread_current();
-  
-
-  char sleep_flag = 1;
-  curr->waitend_ticks = sleep_time + start;
-  enum intr_level old_level = intr_disable ();
-  //msg("return thread %s, end at %d", curr->name, curr->waitend_ticks);
-  //msg("act at %d", timer_ticks());
-
-  list_insert_ordered (&wait_list, &thread_current ()->elem,
-                                 tick_less, NULL);
-    thread_block ();
-    //ASSERT(0);
-    ASSERT (curr->status != THREAD_BLOCKED);  
-  intr_set_level (old_level);
+  while (timer_elapsed (start) < ticks) 
+    thread_yield ();
 }
 
 /* Suspends execution for approximately MS milliseconds. */
@@ -150,24 +135,7 @@ timer_print_stats (void)
 static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
-  struct thread *t;
-  struct list_elem *e;
-  ASSERT(intr_get_level()==INTR_OFF);
   ticks++;
-  e = list_begin (&wait_list);
-  while(e != list_end (&wait_list)){
-      t = list_entry (e, struct thread, elem);
-      e = list_next (e);
-    if ( ticks >= t->waitend_ticks )
-    {
-      
-      thread_unblock(list_entry(list_pop_front (&wait_list),
-                                struct thread, elem));
-    }
-    else{
-      break;
-    }
-  }
   thread_tick ();
 }
 
@@ -232,13 +200,5 @@ real_time_sleep (int64_t num, int32_t denom)
       ASSERT (denom % 1000 == 0);
       busy_wait (loops_per_tick * num / 1000 * TIMER_FREQ / (denom / 1000)); 
     }
-}
-
-static bool
-tick_less (const struct list_elem *a_, const struct list_elem *b_, void *aux UNUSED)
-{
-  const int64_t tick1 = list_entry (a_, struct thread, elem) -> waitend_ticks;
-  const int64_t tick2 = list_entry (b_, struct thread, elem) -> waitend_ticks;
-  return tick1 <= tick2;
 }
 

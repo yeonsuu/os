@@ -4,6 +4,16 @@
 #include "userprog/gdt.h"
 #include "threads/interrupt.h"
 #include "threads/thread.h"
+#include "userprog/process.h"
+#include "threads/vaddr.h"
+#include "userprog/pagedir.h"
+#include "threads/palloc.h"
+#include "vm/s-pagetable.h"
+#include "vm/frame.h"
+#include "threads/pte.h"
+
+
+
 
 /* Number of page faults processed. */
 static long long page_fault_cnt;
@@ -122,6 +132,22 @@ kill (struct intr_frame *f)
 static void
 page_fault (struct intr_frame *f) 
 {
+//ASSERT(0);
+  /*
+  1. page fault가 난 page를 supplemental page table에 위치
+  memory reference가 valid 이면 -> supplemental page table entry 를 이용하여 
+  "file system" 혹은 "swap slot" 에 있을, 혹은 그냥 "all-zero page"를 locate
+  (if you implement sharing, page's data 는 이미 page frame에 있으나 page table에 없을 수 있다)
+
+  2. page를 저장할 frame을 가져온다. (4.1.5 Managing Frame Table)
+  (if you implement sharing, 우리가 필요한 data는 이미 frame에 있을 수 있다 -> you must be able to locate that frame)
+
+  3. Fetch data into frame <- file system에서 가져오거나, swap하거나, zeroing it ...
+  (if you implement sharing, page you need는 이미 frame에 있을 수 있다 -> no action is necessary)
+
+  4. fault가 발생한 page table entry의 fulting virtul address-> physical page 이도록 만들어라 (userprog/pagedir.c) 
+  */
+
   bool not_present;  /* True: not-present page, false: writing r/o page. */
   bool write;        /* True: access was write, false: access was read. */
   bool user;         /* True: access by user, false: access by kernel. */
@@ -151,11 +177,76 @@ page_fault (struct intr_frame *f)
   /* To implement virtual memory, delete the rest of the function
      body, and replace it with code that brings in the page to
      which fault_addr refers. */
-  printf ("Page fault at %p: %s error %s page in %s context.\n",
-          fault_addr,
-          not_present ? "not present" : "rights violation",
-          write ? "writing" : "reading",
-          user ? "user" : "kernel");
-  kill (f);
+
+  struct thread *curr = thread_current();
+  //ASSERT(f->esp !=NULL);
+  //printf("\n\n page fault \n\n");
+  //printf("page fault addr %p, page addr %p, esp %p, pid %d\n", fault_addr, pg_round_down (fault_addr), f->esp, thread_current()->tid);
+
+  if(fault_addr == NULL || is_kernel_vaddr(fault_addr))
+  {
+    //ASSERT(0);
+    find_process(curr -> tid)->exit_status = -1;
+    thread_exit();  
+  }
+  /* unmapped page */
+  else if (pagedir_get_page(curr->pagedir, pg_round_down(fault_addr)) == NULL){
+    /* ERROR */
+    if(fault_addr == (f->esp)-PGSIZE)
+    {
+      //ASSERT(0);
+      find_process(curr -> tid)->exit_status = -1;
+      thread_exit();  
+    }
+
+    /* swap out & lazy loading */
+    else if ( find_s_pte( pg_round_down (fault_addr), curr->tid )!= NULL) {
+    }
+
+
+    /* Stack Growth -  */
+    else if (fault_addr >= f->esp - 32){
+      //printf("PID : %d FAULT ADDRESS %p\n", curr ->tid, pg_round_down(fault_addr));
+      find_process(curr -> tid) -> stack_end = pg_round_down(fault_addr);
+      uint8_t *kpage;
+      bool writable;
+      kpage = palloc_get_page (PAL_USER | PAL_ZERO);
+      //writable = pagedir_is_writable(curr->pagedir, pg_round_down(fault_addr));
+      writable = true;
+      if (kpage !=NULL)
+      {
+        /* aaaaaaa pt-grow-stk-sc */
+        
+        //printf("page fault addr %p, page addr %p, esp %p, esp page %p\n", fault_addr, pg_round_down (fault_addr), f->esp, pg_round_down(f->esp));
+        lock_acquire(&evict_lock);
+        pagedir_set_page (thread_current()->pagedir, pg_round_down(fault_addr), kpage, writable, -1);
+        lock_release(&evict_lock);
+
+      }
+      else
+      {
+        lock_acquire(&evict_lock);
+        kpage = ptov(get_free_frame());
+        pagedir_set_page (thread_current()->pagedir, pg_round_down(fault_addr), kpage, writable, -1);
+        lock_release(&evict_lock);
+      }
+      //ASSERT(0);
+    }
+    /* pt-bad-addr */
+    else{
+      //ASSERT(0);
+      find_process(thread_current() -> tid)->exit_status = -1;
+      thread_exit(); 
+    }
+      
+  }
+  
+
+  /* pw-write-code2 */
+  else{
+ //ASSERT(0);
+    find_process(thread_current() -> tid)->exit_status = -1;
+    thread_exit(); 
+    }
 }
 

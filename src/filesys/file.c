@@ -70,6 +70,7 @@ file_read (struct file *file, void *buffer, off_t size)
 {
   off_t bytes_read = inode_read_at (file->inode, buffer, size, file->pos);
   file->pos += bytes_read;
+  //printf("%d", bytes_read);
   return bytes_read;
 }
 
@@ -144,8 +145,11 @@ file_allow_write (struct file *file)
 off_t
 file_length (struct file *file) 
 {
+  off_t off;
   ASSERT (file != NULL);
-  return inode_length (file->inode);
+  off = inode_length (file->inode);
+  return off; 
+
 }
 
 /* Sets the current position in FILE to NEW_POS bytes from the

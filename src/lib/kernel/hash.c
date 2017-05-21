@@ -120,7 +120,7 @@ hash_replace (struct hash *h, struct hash_elem *new)
   if (old != NULL)
     remove_elem (h, old);
   insert_elem (h, bucket, new);
-
+  ASSERT(hash_find(h, new) !=NULL);
   rehash (h);
 
   return old;
